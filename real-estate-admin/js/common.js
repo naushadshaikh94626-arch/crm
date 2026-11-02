@@ -666,6 +666,7 @@ function onCopySuccess(triggerBtn) {
 // Global Share Modal Controller
 let activeModalProperty = null;
 let activeModalShareUrl = '';
+let activeModalShareRequest = 0;
 
 function initShareModal() {
   if (document.getElementById('sharePropertyModal')) return;
@@ -705,7 +706,7 @@ function initShareModal() {
           </div>
           <div class="share-status-pill">
             <span class="status-dot-active"></span>
-            <span>Active</span>
+            <span id="modalShareStatusLabel">Preparing link…</span>
           </div>
         </div>
 
@@ -715,7 +716,7 @@ function initShareModal() {
             <i data-lucide="copy" style="width: 16px; height: 16px;"></i>
           </button>
         </div>
-        <p class="share-demo-note">Demo link: opens only in this browser. Cross-device sharing and access control require a server.</p>
+        <p class="share-demo-note">Anyone with this link can view this property. Links open across devices.</p>
 
         <div class="share-via-heading">
           <i data-lucide="share" style="width: 16px; height: 16px;"></i>
@@ -767,7 +768,7 @@ function initShareModal() {
   if (window.lucide) lucide.createIcons();
 }
 
-function openShareModal(propertyId) {
+async function openShareModal(propertyId) {
   initShareModal();
   const prop = DataStore.getProperties().find(property => property.id === propertyId);
   if (!prop) {
@@ -775,38 +776,9 @@ function openShareModal(propertyId) {
     return;
   }
 
-  let shares;
-  try {
-    shares = JSON.parse(localStorage.getItem('re_property_shares') || '{}');
-    if (!shares || typeof shares !== 'object' || Array.isArray(shares)) {
-      throw new Error('Invalid share link store');
-    }
-
-    let token;
-    do {
-      const bytes = new Uint8Array(32);
-      if (!window.crypto || !window.crypto.getRandomValues) {
-        throw new Error('Secure random number generation is unavailable');
-      }
-      window.crypto.getRandomValues(bytes);
-      token = btoa(String.fromCharCode(...bytes))
-        .replace(/\+/g, '-')
-        .replace(/\//g, '_')
-        .replace(/=+$/g, '');
-    } while (Object.prototype.hasOwnProperty.call(shares, token));
-
-    shares[token] = prop.id;
-    localStorage.setItem('re_property_shares', JSON.stringify(shares));
-    const shareUrl = new URL('share.html', window.location.href);
-    shareUrl.searchParams.set('token', token);
-    activeModalShareUrl = shareUrl.href;
-  } catch (error) {
-    console.error('Unable to generate property share link:', error);
-    showToast('Unable to generate a secure share link. Check browser storage and try again.', 'error');
-    return;
-  }
-
+  const requestId = ++activeModalShareRequest;
   activeModalProperty = prop;
+  activeModalShareUrl = '';
 
   const modal = document.getElementById('sharePropertyModal');
   const img = document.getElementById('modalPropImage');
@@ -814,6 +786,7 @@ function openShareModal(propertyId) {
   const loc = document.getElementById('modalPropLocation');
   const idEl = document.getElementById('modalPropId');
   const statusEl = document.getElementById('modalPropStatus');
+  const shareStatusLabel = document.getElementById('modalShareStatusLabel');
   const linkInput = document.getElementById('modalShareLinkInput');
 
   img.src = prop.image;
@@ -824,19 +797,47 @@ function openShareModal(propertyId) {
   statusEl.textContent = prop.status;
   statusEl.className = `badge badge-${prop.status.toLowerCase()}`;
 
-  linkInput.value = activeModalShareUrl;
+  linkInput.value = '';
+  linkInput.placeholder = 'Preparing secure share link…';
+  shareStatusLabel.textContent = 'Preparing link…';
 
   modal.classList.add('open');
   document.body.style.overflow = 'hidden';
-
-  // Increment share stats in analytics
-  prop.sharesCount = (prop.sharesCount || 0) + 1;
-  DataStore.updateProperty(prop.id, { sharesCount: prop.sharesCount });
 
   // Close on backdrop click
   modal.onclick = (e) => {
     if (e.target === modal) closeShareModal();
   };
+
+  try {
+    const response = await fetch('/.netlify/functions/property-share', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ property: prop })
+    });
+    const result = await response.json();
+    if (!response.ok || !result.token) {
+      throw new Error(result.error || `Share service returned ${response.status}`);
+    }
+
+    const shareUrl = new URL('share.html', window.location.href);
+    shareUrl.searchParams.set('token', result.token);
+    if (requestId !== activeModalShareRequest) return;
+
+    activeModalShareUrl = shareUrl.href;
+    linkInput.value = activeModalShareUrl;
+    linkInput.placeholder = '';
+    shareStatusLabel.textContent = 'Active';
+
+    prop.sharesCount = (prop.sharesCount || 0) + 1;
+    DataStore.updateProperty(prop.id, { sharesCount: prop.sharesCount });
+  } catch (error) {
+    console.error('Unable to create cross-device property share link:', error);
+    if (requestId !== activeModalShareRequest) return;
+    linkInput.placeholder = 'Unable to create share link';
+    shareStatusLabel.textContent = 'Unavailable';
+    showToast('Could not create a share link. Check the Netlify share service and try again.', 'error');
+  }
 }
 
 function closeShareModal() {
@@ -850,8 +851,10 @@ function closeShareModal() {
 function copyModalLink() {
   const linkInput = document.getElementById('modalShareLinkInput');
   const btn = document.getElementById('modalCopyBtn');
-  if (linkInput) {
+  if (linkInput && linkInput.value) {
     copyToClipboard(linkInput.value, btn);
+  } else {
+    showToast('Wait for the share link to finish generating.', 'info');
   }
 }
 

@@ -18,7 +18,7 @@ function appendFeature(container, feature) {
   container.appendChild(item);
 }
 
-function loadSharedProperty() {
+async function loadSharedProperty() {
   const params = new URLSearchParams(window.location.search);
   const previewToken = params.get('preview');
   if (previewToken) {
@@ -27,35 +27,30 @@ function loadSharedProperty() {
   }
 
   const token = params.get('token');
-  if (!token || !/^[A-Za-z0-9_-]{40,}$/.test(token)) {
+  if (!token || !/^[A-Za-z0-9_-]{43}$/.test(token)) {
     showShareError('This sharing link is invalid.');
     return;
   }
 
   try {
-    const shares = JSON.parse(localStorage.getItem('re_property_shares') || '{}');
-    const properties = JSON.parse(localStorage.getItem('re_properties') || '[]');
-    if (!shares || typeof shares !== 'object' || Array.isArray(shares) || !Array.isArray(properties)) {
-      showShareError('This link is invalid or this browser has no saved property data.');
-      return;
-    }
-
-    if (!Object.prototype.hasOwnProperty.call(shares, token)) {
-      showShareError('This link is invalid or was created in another browser.');
-      return;
-    }
-
-    const propertyId = shares[token];
-    const property = properties.find(item => item && item.id === propertyId);
-    if (!property) {
+    const response = await fetch(`/.netlify/functions/property-share?token=${encodeURIComponent(token)}`);
+    if (response.status === 404) {
       showShareError('This property is no longer available.');
       return;
     }
+    if (!response.ok) {
+      throw new Error(`Share service returned ${response.status}`);
+    }
 
-    renderSharedProperty(property);
+    const result = await response.json();
+    if (!result.property || typeof result.property !== 'object' || Array.isArray(result.property)) {
+      throw new Error('Share service returned invalid property data');
+    }
+
+    renderSharedProperty(result.property);
   } catch (error) {
     console.error('Unable to load shared property:', error);
-    showShareError('Property details could not be loaded from this browser.');
+    showShareError('Property details could not be loaded. Check your connection and try again.');
   }
 }
 
