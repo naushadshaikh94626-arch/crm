@@ -54,6 +54,7 @@ function checkEditMode() {
       propertyFormState.price = existing.price;
       propertyFormState.carpetArea = existing.carpetArea || '500 - 1000';
       propertyFormState.description = existing.description || '';
+      propertyFormState.floorPlan = existing.floorPlan || propertyFormState.floorPlan;
       if (existing.gallery && existing.gallery.length > 0) {
         propertyFormState.images = [...existing.gallery];
       }
@@ -63,6 +64,8 @@ function checkEditMode() {
       if (existing.locationAdvantages && existing.locationAdvantages.length > 0) {
         propertyFormState.locationAdvantages = [...existing.locationAdvantages];
       }
+      const floorPlanThumb = document.getElementById('floorPlanThumbImg');
+      if (floorPlanThumb) floorPlanThumb.src = propertyFormState.floorPlan;
       document.querySelector('.add-prop-title-wrap h1').textContent = `Edit Property: #${existing.id}`;
     }
   } else {
@@ -384,6 +387,7 @@ function collectFormData(status = 'Published') {
     image: propertyFormState.images[0] || 'assets/images/property-placeholder.svg',
     gallery: [...propertyFormState.images],
     features: [...propertyFormState.features],
+    floorPlan: propertyFormState.floorPlan,
     locationAdvantages: [...propertyFormState.locationAdvantages],
     description: desc,
     sharesCount: 1,
@@ -392,6 +396,42 @@ function collectFormData(status = 'Published') {
   };
 
   return propObj;
+}
+
+function openClientPreview(event) {
+  event.preventDefault();
+
+  try {
+    if (!window.crypto || !window.crypto.getRandomValues) {
+      throw new Error('Secure random number generation is unavailable');
+    }
+
+    const bytes = new Uint8Array(32);
+    window.crypto.getRandomValues(bytes);
+    const token = btoa(String.fromCharCode(...bytes))
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/g, '');
+    const storageKey = `re_property_preview_${token}`;
+
+    sessionStorage.setItem(storageKey, JSON.stringify(collectFormData('Published')));
+    const previewUrl = new URL('share.html', window.location.href);
+    previewUrl.searchParams.set('preview', token);
+
+    const previewWindow = window.open(previewUrl.href, '_blank');
+    if (!previewWindow) {
+      sessionStorage.removeItem(storageKey);
+      showToast('Preview was blocked. Allow pop-ups and try again.', 'error');
+      return false;
+    }
+
+    previewWindow.opener = null;
+  } catch (error) {
+    console.error('Unable to open client preview:', error);
+    showToast('Unable to open the client preview. Check browser storage and try again.', 'error');
+  }
+
+  return false;
 }
 
 function saveDraft() {
@@ -466,4 +506,3 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
-

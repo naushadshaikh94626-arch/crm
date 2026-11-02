@@ -146,6 +146,15 @@ body {
   white-space: pre-wrap;
 }
 
+.property-floor-plan {
+  width: 100%;
+  max-height: 520px;
+  object-fit: contain;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
 .feature-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));

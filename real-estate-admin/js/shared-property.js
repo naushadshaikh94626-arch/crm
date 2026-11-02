@@ -19,7 +19,14 @@ function appendFeature(container, feature) {
 }
 
 function loadSharedProperty() {
-  const token = new URLSearchParams(window.location.search).get('token');
+  const params = new URLSearchParams(window.location.search);
+  const previewToken = params.get('preview');
+  if (previewToken) {
+    loadClientPreview(previewToken);
+    return;
+  }
+
+  const token = params.get('token');
   if (!token || !/^[A-Za-z0-9_-]{40,}$/.test(token)) {
     showShareError('This sharing link is invalid.');
     return;
@@ -49,6 +56,32 @@ function loadSharedProperty() {
   } catch (error) {
     console.error('Unable to load shared property:', error);
     showShareError('Property details could not be loaded from this browser.');
+  }
+}
+
+function loadClientPreview(token) {
+  if (!/^[A-Za-z0-9_-]{40,}$/.test(token)) {
+    showShareError('This preview link is invalid.');
+    return;
+  }
+
+  try {
+    const rawProperty = sessionStorage.getItem(`re_property_preview_${token}`);
+    if (!rawProperty) {
+      showShareError('This preview is unavailable. Reopen it from the property editor.');
+      return;
+    }
+
+    const property = JSON.parse(rawProperty);
+    if (!property || typeof property !== 'object' || Array.isArray(property)) {
+      showShareError('The preview data is invalid.');
+      return;
+    }
+
+    renderSharedProperty(property);
+  } catch (error) {
+    console.error('Unable to load client preview:', error);
+    showShareError('The client preview could not be loaded from this browser.');
   }
 }
 
@@ -104,6 +137,16 @@ function renderSharedProperty(property) {
   features.forEach(feature => appendFeature(featureContainer, feature));
   if (featureContainer.childElementCount) {
     document.getElementById('featuresSection').hidden = false;
+  }
+
+  if (property.floorPlan) {
+    const floorPlan = document.getElementById('propertyFloorPlan');
+    floorPlan.src = property.floorPlan;
+    floorPlan.onerror = () => {
+      floorPlan.onerror = null;
+      document.getElementById('floorPlanSection').hidden = true;
+    };
+    document.getElementById('floorPlanSection').hidden = false;
   }
 
   const locationContainer = document.getElementById('propertyLocations');
