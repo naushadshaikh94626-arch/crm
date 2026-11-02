@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - RealEstate Admin Panel</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/settings.css">
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Mobile Overlay -->
+    <div class="sidebar-overlay"></div>
+
+    <!-- COMMON SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <img class="sidebar-logo" src="assets/images/logo.svg" alt="RealEstate Logo">
+        <div class="sidebar-brand">
+          <span class="brand-title">RealEstate</span>
+          <span class="brand-subtitle">ADMIN PANEL</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-item">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="all-properties.html" class="nav-item">
+          <i data-lucide="building-2"></i>
+          <span>All Properties</span>
+        </a>
+        <a href="add-property.html" class="nav-item">
+          <i data-lucide="plus-circle"></i>
+          <span>Add Properties</span>
+        </a>
+        <a href="share-analytics.html" class="nav-item">
+          <i data-lucide="share-2"></i>
+          <span>Share Analytics</span>
+        </a>
+        <a href="enquiries.html" class="nav-item">
+          <i data-lucide="mail"></i>
+          <span>Enquiries</span>
+          <span class="nav-badge">12</span>
+        </a>
+        <a href="settings.html" class="nav-item active">
+          <i data-lucide="settings"></i>
+          <span>Settings</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="logout-btn" onclick="showToast('Logged out successfully', 'info')">
+          <i data-lucide="log-out"></i>
+          <span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+      <!-- TOP HEADER -->
+      <header class="top-header">
+        <div class="header-left">
+          <button class="mobile-menu-btn" aria-label="Toggle menu">
+            <i data-lucide="menu"></i>
+          </button>
+          <div class="global-search">
+            <i data-lucide="search"></i>
+            <input type="text" placeholder="Search properties, clients, enquiries...">
+          </div>
+        </div>
+
+        <div class="header-right">
+          <div class="admin-profile">
+            <div class="admin-avatar">A</div>
+            <div class="admin-info">
+              <span class="admin-name">Admin</span>
+              <span class="admin-role">Real Estate</span>
+            </div>
+            <i data-lucide="chevron-down" class="profile-dropdown-icon"></i>
+
+            <div class="profile-menu">
+              <a href="settings.html"><i data-lucide="user"></i> Admin Profile</a>
+              <a href="settings.html#company"><i data-lucide="building"></i> Company Profile</a>
+              <a href="settings.html#security"><i data-lucide="shield-check"></i> Security & Password</a>
+              <div class="profile-menu-divider"></div>
+              <a href="#" onclick="showToast('Logged out', 'info')"><i data-lucide="log-out"></i> Log Out</a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- PAGE BODY -->
+      <div class="page-body">
+        <div class="page-header">
+          <h1 class="page-title">Admin Settings</h1>
+          <p class="page-subtitle">Manage administrative profiles, company credentials, currencies and security.</p>
+        </div>
+
+        <!-- Hidden Avatar File Input -->
+        <input type="file" id="hiddenAvatarInput" accept="image/*" style="display: none;" onchange="handleAvatarUpload(event)">
+
+        <!-- Settings Container -->
+        <div class="settings-container">
+          <!-- Left Quick Nav -->
+          <div class="settings-nav-card">
+            <button class="settings-nav-btn active" onclick="scrollToSection('secProfile', this)">
+              <i data-lucide="user"></i>
+              <span>Profile Settings</span>
+            </button>
+            <button class="settings-nav-btn" onclick="scrollToSection('secCompany', this)">
+              <i data-lucide="building-2"></i>
+              <span>Company Information</span>
+            </button>
+            <button class="settings-nav-btn" onclick="scrollToSection('secGeneral', this)">
+              <i data-lucide="sliders"></i>
+              <span>General Settings</span>
+            </button>
+            <button class="settings-nav-btn" onclick="scrollToSection('secNotifications', this)">
+              <i data-lucide="bell"></i>
+              <span>Notifications</span>
+            </button>
+            <button class="settings-nav-btn" onclick="scrollToSection('secSecurity', this)">
+              <i data-lucide="shield-check"></i>
+              <span>Security</span>
+            </button>
+          </div>
+
+          <!-- Right Content Stack -->
+          <div class="settings-content-stack">
+            
+            <!-- 1. Profile Settings -->
+            <section id="secProfile" class="settings-section-card">
+              <div class="settings-section-header">
+                <h2 class="settings-section-title">Profile Settings</h2>
+                <p class="settings-section-desc">Update your personal account details and public avatar.</p>
+              </div>
+
+              <!-- Avatar Row -->
+              <div class="avatar-upload-row">
+                <div id="avatarPreviewContainer" class="settings-avatar-preview">A</div>
+                <div class="avatar-actions">
+                  <button class="btn btn-secondary btn-sm" onclick="document.getElementById('hiddenAvatarInput').click()">
+                    <i data-lucide="camera" style="width: 14px; height: 14px;"></i>
+                    <span>Change Photo</span>
+                  </button>
+                  <button class="btn btn-secondary btn-sm" onclick="removeAvatar()">
+                    <span>Remove</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="form-grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label" for="setAdminName">Admin Name</label>
+                  <input type="text" id="setAdminName" class="form-control" value="Admin">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label" for="setAdminEmail">Email Address</label>
+                  <input type="email" id="setAdminEmail" class="form-control" value="admin@realestate.com">
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 20px;">
+                <label class="form-label" for="setAdminPhone">Phone Number</label>
+                <input type="text" id="setAdminPhone" class="form-control" value="+91 98765 43210">
+              </div>
+
+              <button class="btn btn-primary" onclick="saveProfileSettings()">
+                <span>Save Profile Changes</span>
+              </button>
+            </section>
+
+            <!-- 2. Company Information -->
+            <section id="secCompany" class="settings-section-card">
+              <div class="settings-section-header">
+                <h2 class="settings-section-title">Company Information</h2>
+                <p class="settings-section-desc">Manage agency branding, corporate address and public contacts.</p>
+              </div>
+
+              <div class="form-grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label" for="setCompanyName">Company Name</label>
+                  <input type="text" id="setCompanyName" class="form-control" value="RealEstate Realty Solutions Pvt Ltd">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label" for="setCompanyWebsite">Website URL</label>
+                  <input type="url" id="setCompanyWebsite" class="form-control" value="https://realestate.com">
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 20px;">
+                <label class="form-label" for="setCompanyAddress">Office Address</label>
+                <input type="text" id="setCompanyAddress" class="form-control" value="Senapati Bapat Road, Shivajinagar, Pune 411016">
+              </div>
+
+              <button class="btn btn-primary" onclick="saveCompanySettings()">
+                <span>Save Company Info</span>
+              </button>
+            </section>
+
+            <!-- 3. General Settings -->
+            <section id="secGeneral" class="settings-section-card">
+              <div class="settings-section-header">
+                <h2 class="settings-section-title">General Settings</h2>
+                <p class="settings-section-desc">Regional currency display, date conventions, and timezone offsets.</p>
+              </div>
+
+              <div class="form-grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label" for="setCurrency">Currency Format</label>
+                  <select id="setCurrency" class="form-control">
+                    <option value="INR (₹)" selected>INR (₹) - Indian Rupee</option>
+                    <option value="USD ($)">USD ($) - US Dollar</option>
+                    <option value="EUR (€)">EUR (€) - Euro</option>
+                    <option value="AED">AED - UAE Dirham</option>
+                  </select>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label" for="setDateFormat">Date Format</label>
+                  <select id="setDateFormat" class="form-control">
+                    <option value="DD/MM/YYYY" selected>DD/MM/YYYY (e.g. 02/11/2026)</option>
+                    <option value="MM/DD/YYYY">MM/DD/YYYY (e.g. 11/02/2026)</option>
+                    <option value="YYYY-MM-DD">YYYY-MM-DD (e.g. 2026-11-02)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 20px;">
+                <label class="form-label" for="setTimeZone">Time Zone</label>
+                <select id="setTimeZone" class="form-control">
+                  <option value="GMT+05:30 (India Standard Time)" selected>(GMT+05:30) Chennai, Kolkata, Mumbai, New Delhi</option>
+                  <option value="GMT+04:00 (Gulf Standard Time)">(GMT+04:00) Abu Dhabi, Muscat, Dubai</option>
+                  <option value="GMT+00:00 (UTC/GMT)">(GMT+00:00) London, Dublin</option>
+                  <option value="GMT-05:00 (Eastern Time)">(GMT-05:00) New York, Toronto</option>
+                </select>
+              </div>
+
+              <button class="btn btn-primary" onclick="saveGeneralSettings()">
+                <span>Save General Settings</span>
+              </button>
+            </section>
+
+            <!-- 4. Notification Settings -->
+            <section id="secNotifications" class="settings-section-card">
+              <div class="settings-section-header">
+                <h2 class="settings-section-title">Notification Settings</h2>
+                <p class="settings-section-desc">Choose which activities trigger alerts and notifications.</p>
+              </div>
+
+              <div class="toggle-setting-row">
+                <div class="toggle-info">
+                  <span class="toggle-title">New Enquiry Notifications</span>
+                  <span class="toggle-desc">Receive immediate push alerts whenever a client submits an enquiry.</span>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="togNotifyEnquiry" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="toggle-setting-row">
+                <div class="toggle-info">
+                  <span class="toggle-title">Property Updates & Approval Alerts</span>
+                  <span class="toggle-desc">Notify when properties transition from Draft to Published or Archived.</span>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="togNotifyProp" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="toggle-setting-row">
+                <div class="toggle-info">
+                  <span class="toggle-title">Share Milestone Notifications</span>
+                  <span class="toggle-desc">Alert when a property link reaches 100+ shares or 1,000+ clicks.</span>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="togNotifyShare" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div style="margin-top: 20px;">
+                <button class="btn btn-primary" onclick="saveNotificationSettings()">
+                  <span>Save Notification Preferences</span>
+                </button>
+              </div>
+            </section>
+
+            <!-- 5. Security Settings -->
+            <section id="secSecurity" class="settings-section-card">
+              <div class="settings-section-header">
+                <h2 class="settings-section-title">Security & Password</h2>
+                <p class="settings-section-desc">Ensure your admin account is protected with a strong credentials.</p>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 16px;">
+                <label class="form-label" for="secCurrentPass">Current Password</label>
+                <input type="password" id="secCurrentPass" class="form-control" placeholder="••••••••">
+              </div>
+
+              <div class="form-grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label" for="secNewPass">New Password</label>
+                  <input type="password" id="secNewPass" class="form-control" placeholder="••••••••">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label" for="secConfirmPass">Confirm New Password</label>
+                  <input type="password" id="secConfirmPass" class="form-control" placeholder="••••••••">
+                </div>
+              </div>
+
+              <button class="btn btn-primary" onclick="saveSecurityPassword()">
+                <span>Update Password</span>
+              </button>
+            </section>
+
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Common & Page JS -->
+  <script src="js/common.js"></script>
+  <script src="js/settings.js"></script>
+</body>
+</html>
+

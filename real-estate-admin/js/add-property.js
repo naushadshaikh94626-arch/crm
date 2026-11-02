@@ -1,0 +1,469 @@
+/**
+ * REAL ESTATE ADMIN PANEL - ADD PROPERTY JAVASCRIPT (add-property.js)
+ * Manages two-way reactive live preview, image uploads, dynamic highlights,
+ * location advantages, floor plan previews, and draft/publish actions.
+ */
+
+// Initial Form State
+let propertyFormState = {
+  id: '',
+  title: 'Premium Commercial Office Space',
+  type: 'Commercial Office',
+  price: '₹ 70,00,000',
+  priceRaw: '7000000',
+  carpetArea: '250 - 800',
+  description: 'A perfect space for your business growth with modern design, prime location and world-class amenities.',
+  images: [
+    'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1527192491265-7e15c55b1ed2?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?auto=format&fit=crop&w=800&q=80'
+  ],
+  currentHeroIndex: 0,
+  features: [
+    { name: 'Carpet Area', value: '250 - 800 Sq.ft' },
+    { name: 'Internal Height', value: '11 Ft' },
+    { name: 'Private Terraces', value: 'Available' },
+    { name: 'Expected Entry ROI', value: '7%' },
+    { name: 'Vastu Compliant', value: 'Yes' }
+  ],
+  floorPlan: 'assets/images/floorplan.svg',
+  locationAdvantages: [
+    '2 Mins - Metro Station',
+    '2 Mins - Railway Station',
+    '10 Mins - Hinjewadi IT Park',
+    '15 Mins - Pune Junction',
+    '20 Mins - Pune Airport'
+  ],
+  brochureName: 'Property_Brochure.pdf',
+  brochureSize: '2.4 MB'
+};
+
+// Check if Editing existing property
+function checkEditMode() {
+  const params = new URLSearchParams(window.location.search);
+  const editId = params.get('editId');
+  if (editId) {
+    const existing = DataStore.getPropertyById(editId);
+    if (existing) {
+      propertyFormState.id = existing.id;
+      propertyFormState.title = existing.title;
+      propertyFormState.type = existing.type;
+      propertyFormState.price = existing.price;
+      propertyFormState.carpetArea = existing.carpetArea || '500 - 1000';
+      propertyFormState.description = existing.description || '';
+      if (existing.gallery && existing.gallery.length > 0) {
+        propertyFormState.images = [...existing.gallery];
+      }
+      if (existing.features && existing.features.length > 0) {
+        propertyFormState.features = [...existing.features];
+      }
+      if (existing.locationAdvantages && existing.locationAdvantages.length > 0) {
+        propertyFormState.locationAdvantages = [...existing.locationAdvantages];
+      }
+      document.querySelector('.add-prop-title-wrap h1').textContent = `Edit Property: #${existing.id}`;
+    }
+  } else {
+    propertyFormState.id = `P${Math.floor(1000 + Math.random() * 9000)}`;
+  }
+}
+
+// Populate Inputs with Current State
+function populateFormFields() {
+  const titleInput = document.getElementById('inputPropertyTitle');
+  const typeSelect = document.getElementById('selectPropertyType');
+  const priceInput = document.getElementById('inputPropertyPrice');
+  const carpetInput = document.getElementById('inputCarpetArea');
+  const descInput = document.getElementById('inputPropertyDesc');
+
+  if (titleInput) titleInput.value = propertyFormState.title;
+  if (typeSelect) typeSelect.value = propertyFormState.type;
+  if (priceInput) priceInput.value = propertyFormState.price.replace(/[^0-9,.]/g, '');
+  if (carpetInput) carpetInput.value = propertyFormState.carpetArea;
+  if (descInput) descInput.value = propertyFormState.description;
+
+  renderImageGallery();
+  renderFeaturesList();
+  renderLocationList();
+  updateLivePreview();
+}
+
+// Real-Time Live Preview Synchronization
+function updateLivePreview() {
+  const prevTitle = document.getElementById('prevPropTitle');
+  const prevDesc = document.getElementById('prevPropDesc');
+  const prevHero = document.getElementById('prevHeroImage');
+  const prevThumbs = document.getElementById('prevCarouselThumbs');
+  const prevHighlights = document.getElementById('prevHighlightsGrid');
+  const prevLocations = document.getElementById('prevLocationList');
+
+  if (prevTitle) prevTitle.textContent = propertyFormState.title || 'Untitled Property';
+  if (prevDesc) prevDesc.textContent = propertyFormState.description || 'Property description will appear here...';
+
+  // Hero Image
+  if (prevHero && propertyFormState.images.length > 0) {
+    const curImg = propertyFormState.images[propertyFormState.currentHeroIndex] || propertyFormState.images[0];
+    prevHero.src = curImg;
+  }
+
+  // Mini carousel thumbs
+  if (prevThumbs) {
+    prevThumbs.innerHTML = propertyFormState.images.slice(0, 5).map((img, idx) => `
+      <img class="carousel-mini-thumb ${idx === propertyFormState.currentHeroIndex ? 'active' : ''}" 
+           src="${img}" alt="Preview thumb" 
+           onclick="selectHeroImage(${idx})"
+           onerror="this.src='assets/images/property-placeholder.svg'">
+    `).join('');
+  }
+
+  // Highlights Grid in Live Preview
+  if (prevHighlights) {
+    const icons = ['maximize', 'arrow-up-down', 'home', 'trending-up', 'check-circle-2'];
+    prevHighlights.innerHTML = propertyFormState.features.slice(0, 5).map((feat, idx) => `
+      <div class="preview-highlight-item">
+        <i data-lucide="${icons[idx % icons.length]}"></i>
+        <span class="preview-highlight-val">${feat.value}</span>
+        <span class="preview-highlight-name">${feat.name}</span>
+      </div>
+    `).join('');
+  }
+
+  // Location Highlights in Live Preview
+  if (prevLocations) {
+    prevLocations.innerHTML = propertyFormState.locationAdvantages.map(loc => `
+      <div class="preview-location-item">
+        <i data-lucide="map-pin"></i>
+        <span>${loc}</span>
+      </div>
+    `).join('');
+  }
+
+  if (window.lucide) lucide.createIcons();
+}
+
+// Carousel Controls
+function selectHeroImage(index) {
+  propertyFormState.currentHeroIndex = index;
+  updateLivePreview();
+}
+
+function prevHero() {
+  if (propertyFormState.images.length === 0) return;
+  propertyFormState.currentHeroIndex = (propertyFormState.currentHeroIndex - 1 + propertyFormState.images.length) % propertyFormState.images.length;
+  updateLivePreview();
+}
+
+function nextHero() {
+  if (propertyFormState.images.length === 0) return;
+  propertyFormState.currentHeroIndex = (propertyFormState.currentHeroIndex + 1) % propertyFormState.images.length;
+  updateLivePreview();
+}
+
+// Image Gallery Management
+function renderImageGallery() {
+  const thumbsContainer = document.getElementById('imageThumbsGrid');
+  if (!thumbsContainer) return;
+
+  let html = propertyFormState.images.map((img, idx) => `
+    <div class="thumb-item">
+      <img src="${img}" alt="Uploaded image ${idx + 1}" onerror="this.src='assets/images/property-placeholder.svg'">
+      <button class="thumb-remove-btn" onclick="removeImage(${idx})" title="Remove image">
+        <i data-lucide="x" style="width: 12px; height: 12px;"></i>
+      </button>
+    </div>
+  `).join('');
+
+  html += `
+    <div class="add-more-box" onclick="triggerImagePicker()">
+      <i data-lucide="plus" style="width: 18px; height: 18px;"></i>
+      <span>Add More</span>
+    </div>
+  `;
+
+  thumbsContainer.innerHTML = html;
+  if (window.lucide) lucide.createIcons({ root: thumbsContainer });
+}
+
+function removeImage(index) {
+  if (propertyFormState.images.length <= 1) {
+    showToast('At least one property image is required', 'error');
+    return;
+  }
+  propertyFormState.images.splice(index, 1);
+  if (propertyFormState.currentHeroIndex >= propertyFormState.images.length) {
+    propertyFormState.currentHeroIndex = 0;
+  }
+  renderImageGallery();
+  updateLivePreview();
+}
+
+function triggerImagePicker() {
+  const fileInput = document.getElementById('hiddenImageUpload');
+  if (fileInput) fileInput.click();
+}
+
+function handleImageFiles(event) {
+  const files = event.target.files;
+  if (!files || files.length === 0) return;
+
+  Array.from(files).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      propertyFormState.images.push(e.target.result);
+      renderImageGallery();
+      updateLivePreview();
+    };
+    reader.readAsDataURL(file);
+  });
+
+  showToast(`${files.length} image(s) uploaded successfully!`, 'success');
+}
+
+// Dynamic Features / Highlights Management
+function renderFeaturesList() {
+  const container = document.getElementById('featuresDynamicList');
+  if (!container) return;
+
+  const icons = ['maximize', 'arrow-up-down', 'home', 'trending-up', 'check-circle-2'];
+
+  container.innerHTML = propertyFormState.features.map((feat, idx) => `
+    <div class="dynamic-row" data-index="${idx}">
+      <div class="dynamic-row-icon">
+        <i data-lucide="${icons[idx % icons.length]}" style="width: 16px; height: 16px;"></i>
+      </div>
+      <input type="text" class="dynamic-input" value="${feat.name}" placeholder="Feature Name" oninput="updateFeatureName(${idx}, this.value)">
+      <input type="text" class="dynamic-val-input" value="${feat.value}" placeholder="Value" oninput="updateFeatureValue(${idx}, this.value)">
+      <button class="dynamic-remove-btn" onclick="removeFeature(${idx})" title="Remove feature">
+        <i data-lucide="x" style="width: 14px; height: 14px;"></i>
+      </button>
+    </div>
+  `).join('');
+
+  if (window.lucide) lucide.createIcons({ root: container });
+}
+
+function updateFeatureName(idx, val) {
+  propertyFormState.features[idx].name = val;
+  updateLivePreview();
+}
+
+function updateFeatureValue(idx, val) {
+  propertyFormState.features[idx].value = val;
+  updateLivePreview();
+}
+
+function addFeatureRow() {
+  propertyFormState.features.push({ name: 'New Amenity', value: 'Included' });
+  renderFeaturesList();
+  updateLivePreview();
+}
+
+function removeFeature(idx) {
+  if (propertyFormState.features.length <= 1) {
+    showToast('At least one feature is required', 'error');
+    return;
+  }
+  propertyFormState.features.splice(idx, 1);
+  renderFeaturesList();
+  updateLivePreview();
+}
+
+// Dynamic Location Advantages Management
+function renderLocationList() {
+  const container = document.getElementById('locationDynamicList');
+  if (!container) return;
+
+  container.innerHTML = propertyFormState.locationAdvantages.map((loc, idx) => `
+    <div class="dynamic-row" data-index="${idx}">
+      <div class="dynamic-row-icon">
+        <i data-lucide="map-pin" style="width: 16px; height: 16px;"></i>
+      </div>
+      <input type="text" class="dynamic-input" value="${loc}" placeholder="e.g. 5 Mins - Highway" oninput="updateLocationAdvantage(${idx}, this.value)">
+      <button class="dynamic-remove-btn" onclick="removeLocation(${idx})" title="Remove location advantage">
+        <i data-lucide="x" style="width: 14px; height: 14px;"></i>
+      </button>
+    </div>
+  `).join('');
+
+  if (window.lucide) lucide.createIcons({ root: container });
+}
+
+function updateLocationAdvantage(idx, val) {
+  propertyFormState.locationAdvantages[idx] = val;
+  updateLivePreview();
+}
+
+function addLocationRow() {
+  propertyFormState.locationAdvantages.push('5 Mins - Prime Landmark');
+  renderLocationList();
+  updateLivePreview();
+}
+
+function removeLocation(idx) {
+  if (propertyFormState.locationAdvantages.length <= 1) {
+    showToast('At least one location highlight is required', 'error');
+    return;
+  }
+  propertyFormState.locationAdvantages.splice(idx, 1);
+  renderLocationList();
+  updateLivePreview();
+}
+
+// Floor Plan & Brochure Handlers
+function handleFloorPlanUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    propertyFormState.floorPlan = e.target.result;
+    const imgEl = document.getElementById('floorPlanThumbImg');
+    const prevFloor = document.getElementById('prevFloorImg');
+    if (imgEl) imgEl.src = e.target.result;
+    if (prevFloor) prevFloor.src = e.target.result;
+    showToast('Floor plan uploaded!', 'success');
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeFloorPlan() {
+  propertyFormState.floorPlan = 'assets/images/floorplan.svg';
+  const imgEl = document.getElementById('floorPlanThumbImg');
+  const prevFloor = document.getElementById('prevFloorImg');
+  if (imgEl) imgEl.src = propertyFormState.floorPlan;
+  if (prevFloor) prevFloor.src = propertyFormState.floorPlan;
+  showToast('Reset floor plan to default template', 'info');
+}
+
+function handleBrochureUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  propertyFormState.brochureName = file.name;
+  propertyFormState.brochureSize = (file.size / (1024 * 1024)).toFixed(1) + ' MB';
+
+  const nameEl = document.getElementById('brochureFileName');
+  const sizeEl = document.getElementById('brochureFileSize');
+  if (nameEl) nameEl.textContent = propertyFormState.brochureName;
+  if (sizeEl) sizeEl.textContent = propertyFormState.brochureSize;
+
+  showToast('Brochure PDF uploaded successfully!', 'success');
+}
+
+function removeBrochure() {
+  propertyFormState.brochureName = 'Property_Brochure.pdf';
+  propertyFormState.brochureSize = '2.4 MB';
+  const nameEl = document.getElementById('brochureFileName');
+  const sizeEl = document.getElementById('brochureFileSize');
+  if (nameEl) nameEl.textContent = propertyFormState.brochureName;
+  if (sizeEl) sizeEl.textContent = propertyFormState.brochureSize;
+  showToast('Reset to default brochure', 'info');
+}
+
+// Form Submission: Save Draft & Publish
+function collectFormData(status = 'Published') {
+  const title = document.getElementById('inputPropertyTitle').value.trim() || 'Untitled Property';
+  const type = document.getElementById('selectPropertyType').value;
+  const rawPrice = document.getElementById('inputPropertyPrice').value.trim() || '70,00,000';
+  const price = rawPrice.startsWith('₹') ? rawPrice : `₹ ${rawPrice}`;
+  const carpetArea = document.getElementById('inputCarpetArea').value.trim() || '250 - 800';
+  const desc = document.getElementById('inputPropertyDesc').value.trim() || propertyFormState.description;
+
+  const propObj = {
+    id: propertyFormState.id || `P${Math.floor(1000 + Math.random() * 9000)}`,
+    title: title,
+    type: type,
+    price: price,
+    priceUnit: 'Onwards*',
+    area: `${carpetArea} Sq.ft`,
+    carpetArea: carpetArea,
+    location: propertyFormState.locationAdvantages[0] ? propertyFormState.locationAdvantages[0].replace(/^[0-9]+\s*Mins\s*-\s*/, '') + ', Pune' : 'Pune',
+    status: status,
+    image: propertyFormState.images[0] || 'assets/images/property-placeholder.svg',
+    gallery: [...propertyFormState.images],
+    features: [...propertyFormState.features],
+    locationAdvantages: [...propertyFormState.locationAdvantages],
+    description: desc,
+    sharesCount: 1,
+    clicksCount: 0,
+    isFavourite: false
+  };
+
+  return propObj;
+}
+
+function saveDraft() {
+  const prop = collectFormData('Draft');
+  const existing = DataStore.getPropertyById(prop.id);
+  if (existing && existing.id === prop.id) {
+    DataStore.updateProperty(prop.id, prop);
+  } else {
+    DataStore.addProperty(prop);
+  }
+  showToast('Property saved as Draft!', 'success');
+}
+
+function publishAndGenerateLink() {
+  const prop = collectFormData('Published');
+  const existing = DataStore.getPropertyById(prop.id);
+  if (existing && existing.id === prop.id) {
+    DataStore.updateProperty(prop.id, prop);
+  } else {
+    DataStore.addProperty(prop);
+  }
+
+  showToast('Property Published & Link Generated!', 'success');
+
+  // Open the exact Share Modal with this new property's generated link
+  setTimeout(() => {
+    openShareModal(prop.id);
+  }, 400);
+}
+
+// Bind live listeners
+document.addEventListener('DOMContentLoaded', () => {
+  checkEditMode();
+  populateFormFields();
+
+  // Input live listeners
+  const titleInput = document.getElementById('inputPropertyTitle');
+  const descInput = document.getElementById('inputPropertyDesc');
+  const typeSelect = document.getElementById('selectPropertyType');
+  const priceInput = document.getElementById('inputPropertyPrice');
+  const carpetInput = document.getElementById('inputCarpetArea');
+
+  if (titleInput) {
+    titleInput.addEventListener('input', (e) => {
+      propertyFormState.title = e.target.value;
+      updateLivePreview();
+    });
+  }
+
+  if (descInput) {
+    descInput.addEventListener('input', (e) => {
+      propertyFormState.description = e.target.value;
+      updateLivePreview();
+    });
+  }
+
+  if (typeSelect) {
+    typeSelect.addEventListener('change', (e) => {
+      propertyFormState.type = e.target.value;
+      updateLivePreview();
+    });
+  }
+
+  if (carpetInput) {
+    carpetInput.addEventListener('input', (e) => {
+      propertyFormState.carpetArea = e.target.value;
+      if (propertyFormState.features[0] && propertyFormState.features[0].name.toLowerCase().includes('carpet')) {
+        propertyFormState.features[0].value = `${e.target.value} Sq.ft`;
+        renderFeaturesList();
+      }
+      updateLivePreview();
+    });
+  }
+});
+

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enquiries Management - RealEstate Admin Panel</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/enquiries.css">
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Mobile Overlay -->
+    <div class="sidebar-overlay"></div>
+
+    <!-- COMMON SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <img class="sidebar-logo" src="assets/images/logo.svg" alt="RealEstate Logo">
+        <div class="sidebar-brand">
+          <span class="brand-title">RealEstate</span>
+          <span class="brand-subtitle">ADMIN PANEL</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-item">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="all-properties.html" class="nav-item">
+          <i data-lucide="building-2"></i>
+          <span>All Properties</span>
+        </a>
+        <a href="add-property.html" class="nav-item">
+          <i data-lucide="plus-circle"></i>
+          <span>Add Properties</span>
+        </a>
+        <a href="share-analytics.html" class="nav-item">
+          <i data-lucide="share-2"></i>
+          <span>Share Analytics</span>
+        </a>
+        <a href="enquiries.html" class="nav-item active">
+          <i data-lucide="mail"></i>
+          <span>Enquiries</span>
+          <span class="nav-badge">12</span>
+        </a>
+        <a href="settings.html" class="nav-item">
+          <i data-lucide="settings"></i>
+          <span>Settings</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="logout-btn" onclick="showToast('Logged out successfully', 'info')">
+          <i data-lucide="log-out"></i>
+          <span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+      <!-- TOP HEADER -->
+      <header class="top-header">
+        <div class="header-left">
+          <button class="mobile-menu-btn" aria-label="Toggle menu">
+            <i data-lucide="menu"></i>
+          </button>
+          <div class="global-search">
+            <i data-lucide="search"></i>
+            <input type="text" placeholder="Search properties, clients, enquiries...">
+          </div>
+        </div>
+
+        <div class="header-right">
+          <div class="admin-profile">
+            <div class="admin-avatar">A</div>
+            <div class="admin-info">
+              <span class="admin-name">Admin</span>
+              <span class="admin-role">Real Estate</span>
+            </div>
+            <i data-lucide="chevron-down" class="profile-dropdown-icon"></i>
+
+            <div class="profile-menu">
+              <a href="settings.html"><i data-lucide="user"></i> Admin Profile</a>
+              <a href="settings.html#company"><i data-lucide="building"></i> Company Profile</a>
+              <a href="settings.html#security"><i data-lucide="shield-check"></i> Security & Password</a>
+              <div class="profile-menu-divider"></div>
+              <a href="#" onclick="showToast('Logged out', 'info')"><i data-lucide="log-out"></i> Log Out</a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- PAGE BODY -->
+      <div class="page-body">
+        <!-- Page Title -->
+        <div class="page-header">
+          <h1 class="page-title">Enquiries Management</h1>
+          <p class="page-subtitle">Track, follow up, and convert property buyer leads across channels.</p>
+        </div>
+
+        <!-- 5 Statistics Cards -->
+        <section class="enquiries-stats-grid">
+          <div class="enquiry-stat-pill stat-theme-total">
+            <div class="enquiry-icon-box">
+              <i data-lucide="inbox" style="width: 22px; height: 22px;"></i>
+            </div>
+            <div class="enquiry-stat-data">
+              <span id="enqStatTotal" class="enquiry-stat-num">86</span>
+              <span class="enquiry-stat-lbl">Total Enquiries</span>
+            </div>
+          </div>
+
+          <div class="enquiry-stat-pill stat-theme-new">
+            <div class="enquiry-icon-box">
+              <i data-lucide="bell" style="width: 22px; height: 22px;"></i>
+            </div>
+            <div class="enquiry-stat-data">
+              <span id="enqStatNew" class="enquiry-stat-num">12</span>
+              <span class="enquiry-stat-lbl">New Leads</span>
+            </div>
+          </div>
+
+          <div class="enquiry-stat-pill stat-theme-contacted">
+            <div class="enquiry-icon-box">
+              <i data-lucide="phone-call" style="width: 22px; height: 22px;"></i>
+            </div>
+            <div class="enquiry-stat-data">
+              <span id="enqStatContacted" class="enquiry-stat-num">34</span>
+              <span class="enquiry-stat-lbl">Contacted</span>
+            </div>
+          </div>
+
+          <div class="enquiry-stat-pill stat-theme-interested">
+            <div class="enquiry-icon-box">
+              <i data-lucide="heart" style="width: 22px; height: 22px;"></i>
+            </div>
+            <div class="enquiry-stat-data">
+              <span id="enqStatInterested" class="enquiry-stat-num">28</span>
+              <span class="enquiry-stat-lbl">Interested</span>
+            </div>
+          </div>
+
+          <div class="enquiry-stat-pill stat-theme-converted">
+            <div class="enquiry-icon-box">
+              <i data-lucide="check-circle" style="width: 22px; height: 22px;"></i>
+            </div>
+            <div class="enquiry-stat-data">
+              <span id="enqStatConverted" class="enquiry-stat-num">12</span>
+              <span class="enquiry-stat-lbl">Converted</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Filter & Search Toolbar -->
+        <div class="enquiries-toolbar">
+          <div class="enquiry-filter-tabs">
+            <button class="enquiry-tab active" onclick="filterByStatusTab('All', this)">All (86)</button>
+            <button class="enquiry-tab" onclick="filterByStatusTab('New', this)">New (12)</button>
+            <button class="enquiry-tab" onclick="filterByStatusTab('Contacted', this)">Contacted (34)</button>
+            <button class="enquiry-tab" onclick="filterByStatusTab('Interested', this)">Interested (28)</button>
+            <button class="enquiry-tab" onclick="filterByStatusTab('Converted', this)">Converted (12)</button>
+          </div>
+
+          <div class="enquiry-search-group">
+            <div class="enquiry-search-input">
+              <i data-lucide="search"></i>
+              <input type="text" id="enquirySearch" placeholder="Search client, email, property...">
+            </div>
+          </div>
+        </div>
+
+        <!-- Enquiries Table -->
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Client Name</th>
+                <th>Phone / WhatsApp</th>
+                <th>Email</th>
+                <th>Interested Property</th>
+                <th>Enquiry Date</th>
+                <th>Source</th>
+                <th>Status</th>
+                <th style="text-align: right; padding-right: 24px;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="enquiriesTableBody">
+              <!-- Dynamically populated by enquiries.js -->
+            </tbody>
+          </table>
+
+          <!-- Table Footer -->
+          <div class="pagination-wrapper">
+            <span id="enquiriesResultCount">Showing 8 of 86 enquiries</span>
+            <div class="pagination-controls">
+              <button class="page-btn active">1</button>
+              <button class="page-btn">2</button>
+              <button class="page-btn">3</button>
+              <button class="page-btn"><i data-lucide="chevron-right" style="width: 14px; height: 14px;"></i></button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ENQUIRY DETAILS MODAL -->
+  <div id="enquiryDetailModal" class="modal-backdrop">
+    <div class="modal-card" style="max-width: 500px;">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <i data-lucide="user" style="color: var(--primary);"></i>
+          <h2 class="modal-title">Enquiry Details</h2>
+        </div>
+        <button class="modal-close-btn" onclick="closeEnquiryModal()">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <div class="detail-modal-grid">
+        <div class="detail-field-box">
+          <div class="detail-field-lbl">Client Name</div>
+          <div id="modalEnqClient" class="detail-field-val">Rahul Sharma</div>
+        </div>
+        <div class="detail-field-box">
+          <div class="detail-field-lbl">Contact Phone</div>
+          <div id="modalEnqPhone" class="detail-field-val">+91 98234 56789</div>
+        </div>
+        <div class="detail-field-box">
+          <div class="detail-field-lbl">Email Address</div>
+          <div id="modalEnqEmail" class="detail-field-val">rahul@example.com</div>
+        </div>
+        <div class="detail-field-box">
+          <div class="detail-field-lbl">Budget</div>
+          <div id="modalEnqBudget" class="detail-field-val">₹ 75 Lakhs</div>
+        </div>
+      </div>
+
+      <div class="detail-field-box" style="margin-bottom: 16px;">
+        <div class="detail-field-lbl">Interested Property</div>
+        <div id="modalEnqProperty" class="detail-field-val" style="color: var(--primary);">Premium Office Space</div>
+      </div>
+
+      <div class="detail-field-box" style="margin-bottom: 16px;">
+        <div class="detail-field-lbl">Source & Date</div>
+        <div style="font-size: 13px; color: var(--text-secondary);">
+          Source: <strong id="modalEnqSource">WhatsApp</strong> | <span id="modalEnqDate">2026-11-01</span>
+        </div>
+      </div>
+
+      <div class="detail-field-box" style="margin-bottom: 24px;">
+        <div class="detail-field-lbl">Client Notes & Requirements</div>
+        <div id="modalEnqNotes" style="font-size: 13.5px; color: var(--text-secondary); line-height: 1.5;">
+          Looking for immediate possession for an IT consulting office of 15 people.
+        </div>
+      </div>
+
+      <button class="btn btn-primary" style="width: 100%;" onclick="closeEnquiryModal()">
+        <span>Done</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Common & Page JS -->
+  <script src="js/common.js"></script>
+  <script src="js/enquiries.js"></script>
+</body>
+</html>
+

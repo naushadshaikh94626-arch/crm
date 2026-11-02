@@ -1,0 +1,273 @@
+/* ==========================================================================
+   ENQUIRIES SPECIFIC STYLES (enquiries.css)
+   ========================================================================== */
+
+/* 5 Statistics Grid */
+.enquiries-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.enquiry-stat-pill {
+  background-color: #FFFFFF;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  padding: 16px 20px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: transform var(--transition-fast);
+}
+
+.enquiry-stat-pill:hover {
+  transform: translateY(-2px);
+}
+
+.enquiry-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.enquiry-stat-data {
+  display: flex;
+  flex-direction: column;
+}
+
+.enquiry-stat-num {
+  font-family: 'Poppins', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.1;
+}
+
+.enquiry-stat-lbl {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* Color Themes for Enquiry Stats */
+.stat-theme-total .enquiry-icon-box { background-color: #FFF3ED; color: var(--primary); }
+.stat-theme-new .enquiry-icon-box { background-color: #FEE2E2; color: #EF4444; }
+.stat-theme-contacted .enquiry-icon-box { background-color: #FEF3C7; color: #D97706; }
+.stat-theme-interested .enquiry-icon-box { background-color: #E0E7FF; color: #4F46E5; }
+.stat-theme-converted .enquiry-icon-box { background-color: #DCFCE7; color: #16A34A; }
+
+/* Filter & Search Toolbar */
+.enquiries-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.enquiry-filter-tabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.enquiry-tab {
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  background-color: #FFFFFF;
+  border: 1px solid var(--border-color);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+.enquiry-tab:hover {
+  border-color: #CBD5E1;
+  color: var(--text-main);
+}
+
+.enquiry-tab.active {
+  background-color: #FFF7ED;
+  border-color: var(--primary);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.enquiry-search-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.enquiry-search-input {
+  position: relative;
+  width: 280px;
+}
+
+.enquiry-search-input input {
+  width: 100%;
+  height: 38px;
+  padding: 6px 14px 6px 36px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  background-color: #FFFFFF;
+  font-size: 13px;
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.enquiry-search-input input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+.enquiry-search-input svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  color: var(--text-muted);
+}
+
+/* Client Avatar & Contact in Table */
+.client-info-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.client-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #334155;
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.client-name-bold {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.client-date-sub {
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+
+.contact-links-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.direct-call-btn, .direct-wa-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-xs);
+  transition: transform var(--transition-fast);
+}
+
+.direct-call-btn {
+  background-color: #EFF6FF;
+  color: #2563EB;
+}
+
+.direct-wa-btn {
+  background-color: #DCFCE7;
+  color: #16A34A;
+}
+
+.direct-call-btn:hover, .direct-wa-btn:hover {
+  transform: scale(1.15);
+}
+
+/* Status Selector inside table */
+.status-select-badge {
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 600;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 22px;
+}
+
+/* Enquiry Details Modal */
+.detail-modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.detail-field-box {
+  background-color: #F8FAFC;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+}
+
+.detail-field-lbl {
+  font-size: 11.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.detail-field-val {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .enquiries-stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 680px) {
+  .enquiries-stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .enquiries-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .enquiry-search-input {
+    width: 100%;
+  }
+}
+

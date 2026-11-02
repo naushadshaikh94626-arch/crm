@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Property - RealEstate Admin Panel</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/add-property.css">
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Mobile Overlay -->
+    <div class="sidebar-overlay"></div>
+
+    <!-- COMMON SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <img class="sidebar-logo" src="assets/images/logo.svg" alt="RealEstate Logo">
+        <div class="sidebar-brand">
+          <span class="brand-title">RealEstate</span>
+          <span class="brand-subtitle">ADMIN PANEL</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-item">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="all-properties.html" class="nav-item">
+          <i data-lucide="building-2"></i>
+          <span>All Properties</span>
+        </a>
+        <a href="add-property.html" class="nav-item active">
+          <i data-lucide="plus-circle"></i>
+          <span>Add Properties</span>
+        </a>
+        <a href="share-analytics.html" class="nav-item">
+          <i data-lucide="share-2"></i>
+          <span>Share Analytics</span>
+        </a>
+        <a href="enquiries.html" class="nav-item">
+          <i data-lucide="mail"></i>
+          <span>Enquiries</span>
+          <span class="nav-badge">12</span>
+        </a>
+        <a href="settings.html" class="nav-item">
+          <i data-lucide="settings"></i>
+          <span>Settings</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="logout-btn" onclick="showToast('Logged out successfully', 'info')">
+          <i data-lucide="log-out"></i>
+          <span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+      <!-- TOP HEADER -->
+      <header class="top-header">
+        <div class="header-left">
+          <button class="mobile-menu-btn" aria-label="Toggle menu">
+            <i data-lucide="menu"></i>
+          </button>
+          <div class="global-search">
+            <i data-lucide="search"></i>
+            <input type="text" placeholder="Search properties, clients, enquiries...">
+          </div>
+        </div>
+
+        <div class="header-right">
+          <div class="admin-profile">
+            <div class="admin-avatar">A</div>
+            <div class="admin-info">
+              <span class="admin-name">Admin</span>
+              <span class="admin-role">Real Estate</span>
+            </div>
+            <i data-lucide="chevron-down" class="profile-dropdown-icon"></i>
+
+            <div class="profile-menu">
+              <a href="settings.html"><i data-lucide="user"></i> Admin Profile</a>
+              <a href="settings.html#company"><i data-lucide="building"></i> Company Profile</a>
+              <a href="settings.html#security"><i data-lucide="shield-check"></i> Security & Password</a>
+              <div class="profile-menu-divider"></div>
+              <a href="#" onclick="showToast('Logged out', 'info')"><i data-lucide="log-out"></i> Log Out</a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- PAGE BODY -->
+      <div class="page-body">
+        <!-- Top Actions Header (Image 5 Match) -->
+        <div class="add-prop-header">
+          <div class="add-prop-title-wrap">
+            <a href="all-properties.html" class="back-link" title="Back to Properties">
+              <i data-lucide="chevron-left" style="width: 20px; height: 20px;"></i>
+            </a>
+            <h1 class="page-title">Add New Property</h1>
+          </div>
+
+          <div class="add-prop-actions">
+            <button class="btn btn-secondary" onclick="saveDraft()">
+              <span>Save Draft</span>
+            </button>
+            <button class="btn btn-primary" onclick="publishAndGenerateLink()">
+              <span>Publish & Generate Link</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Hidden File Inputs -->
+        <input type="file" id="hiddenImageUpload" multiple accept="image/*" style="display: none;" onchange="handleImageFiles(event)">
+        <input type="file" id="hiddenFloorPlanUpload" accept="image/*,.pdf" style="display: none;" onchange="handleFloorPlanUpload(event)">
+        <input type="file" id="hiddenBrochureUpload" accept=".pdf" style="display: none;" onchange="handleBrochureUpload(event)">
+
+        <!-- Two Column Editor Grid -->
+        <div class="property-editor-grid">
+          <!-- LEFT COLUMN: 6 FORM SECTIONS -->
+          <div class="form-section-stack">
+            
+            <!-- SECTION 1: Basic Information -->
+            <div class="form-card">
+              <div class="form-card-header">
+                <span class="step-number">1</span>
+                <h2 class="form-card-title">Basic Information</h2>
+              </div>
+
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label class="form-label" for="inputPropertyTitle">Property Title</label>
+                  <input type="text" id="inputPropertyTitle" class="form-control" placeholder="e.g. Premium Office Space" value="Premium Commercial Office Space">
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="selectPropertyType">Property Type</label>
+                  <select id="selectPropertyType" class="form-control">
+                    <option value="Commercial Office" selected>Commercial Office</option>
+                    <option value="Commercial Shop">Commercial Shop</option>
+                    <option value="Residential Plot">Residential Plot</option>
+                    <option value="Industrial Land">Industrial Land</option>
+                    <option value="Luxury Villa">Luxury Villa</option>
+                    <option value="Residential Penthouse">Residential Penthouse</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label class="form-label" for="inputPropertyPrice">Price</label>
+                  <div class="input-with-unit">
+                    <input type="text" id="inputPropertyPrice" class="form-control" placeholder="e.g. ₹ 70,00,000" value="70,00,000">
+                    <span class="input-unit-label">₹ INR</span>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="inputCarpetArea">Carpet Area</label>
+                  <div class="input-with-unit">
+                    <input type="text" id="inputCarpetArea" class="form-control" placeholder="e.g. 250 - 800" value="250 - 800">
+                    <span class="input-unit-label">Sq.ft</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="inputPropertyDesc">Description</label>
+                <textarea id="inputPropertyDesc" class="form-control" placeholder="Write a short description about the property...">A perfect space for your business growth with modern design, prime location and world-class amenities.</textarea>
+              </div>
+            </div>
+
+            <!-- SECTION 2: Property Images -->
+            <div class="form-card">
+              <div class="form-card-header">
+                <span class="step-number">2</span>
+                <h2 class="form-card-title">Property Images</h2>
+              </div>
+
+              <div class="dropzone-box" onclick="triggerImagePicker()">
+                <i data-lucide="image-plus" class="dropzone-icon"></i>
+                <div class="dropzone-title">Upload Images</div>
+                <div class="dropzone-sub">Drag & drop images or click to browse (JPG, PNG, WebP)</div>
+              </div>
+
+              <div id="imageThumbsGrid" class="thumbs-grid">
+                <!-- Dynamically populated by add-property.js -->
+              </div>
+            </div>
+
+            <!-- SECTION 3: Key Highlights / Features -->
+            <div class="form-card">
+              <div class="form-card-header">
+                <span class="step-number">3</span>
+                <h2 class="form-card-title">Key Highlights / Features</h2>
+              </div>
+
+              <div id="featuresDynamicList" class="dynamic-list">
+                <!-- Dynamically populated by add-property.js -->
+              </div>
+
+              <button type="button" class="btn-add-item" onclick="addFeatureRow()">
+                <i data-lucide="plus" style="width: 15px; height: 15px;"></i>
+                <span>Add More Feature</span>
+              </button>
+            </div>
+
+            <!-- SECTION 4: Floor Plan -->
+            <div class="form-card">
+              <div class="form-card-header">
+                <span class="step-number">4</span>
+                <h2 class="form-card-title">Floor Plan</h2>
+              </div>
+
+              <div class="floor-plan-row">
+                <div class="floor-plan-thumb">
+                  <img id="floorPlanThumbImg" src="assets/images/floorplan.svg" alt="Floor Plan Preview">
+                  <button class="thumb-remove-btn" onclick="removeFloorPlan()" title="Remove floor plan">
+                    <i data-lucide="x" style="width: 12px; height: 12px;"></i>
+                  </button>
+                </div>
+
+                <div class="dropzone-box" style="margin-bottom: 0; padding: 22px 14px;" onclick="document.getElementById('hiddenFloorPlanUpload').click()">
+                  <i data-lucide="upload" class="dropzone-icon" style="width: 26px; height: 26px;"></i>
+                  <div class="dropzone-title" style="font-size: 13px;">Upload Floor Plan</div>
+                  <div class="dropzone-sub" style="font-size: 11px;">(JPG, PNG, PDF)</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 5: Location Advantages -->
+            <div class="form-card">
+              <div class="form-card-header">
+                <span class="step-number">5</span>
+                <h2 class="form-card-title">Location Advantages</h2>
+              </div>
+
+              <div id="locationDynamicList" class="dynamic-list">
+                <!-- Dynamically populated by add-property.js -->
+              </div>
+
+              <button type="button" class="btn-add-item" onclick="addLocationRow()">
+                <i data-lucide="plus" style="width: 15px; height: 15px;"></i>
+                <span>Add More Location</span>
+              </button>
+            </div>
+
+            <!-- SECTION 6: Brochure / PDF -->
+            <div class="form-card">
+              <div class="form-card-header">
+                <span class="step-number">6</span>
+                <h2 class="form-card-title">Brochure / PDF</h2>
+              </div>
+
+              <div class="dropzone-box" onclick="document.getElementById('hiddenBrochureUpload').click()">
+                <div class="file-icon-pdf" style="margin: 0 auto 8px auto;">PDF</div>
+                <div class="dropzone-title">Upload Brochure (PDF)</div>
+                <div class="dropzone-sub">Drag & drop or click to browse</div>
+              </div>
+
+              <div class="uploaded-file-card">
+                <div class="file-icon-pdf">PDF</div>
+                <div class="uploaded-file-meta">
+                  <div id="brochureFileName" class="uploaded-file-name">Property_Brochure.pdf</div>
+                  <div id="brochureFileSize" class="uploaded-file-size">2.4 MB</div>
+                </div>
+                <button class="dynamic-remove-btn" onclick="removeBrochure()" title="Remove brochure">
+                  <i data-lucide="x" style="width: 14px; height: 14px;"></i>
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- RIGHT COLUMN: STICKY LIVE PREVIEW (CLIENT VIEW - IMAGE 5 MATCH) -->
+          <div class="preview-sticky-col">
+            <div class="live-preview-card">
+              <div class="preview-top-bar">
+                <div class="preview-badge-label">
+                  <i data-lucide="eye" style="width: 18px; height: 18px;"></i>
+                  <span>Live Preview (Client View)</span>
+                </div>
+                <a href="#" class="open-tab-btn" onclick="showToast('Opened client preview in simulated tab', 'info')">
+                  <span>Open in New Tab</span>
+                  <i data-lucide="external-link" style="width: 14px; height: 14px;"></i>
+                </a>
+              </div>
+
+              <div class="preview-inner">
+                <!-- Hero Image with Carousel Controls -->
+                <div class="preview-hero-wrap">
+                  <img id="prevHeroImage" class="preview-hero-img" src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80" alt="Live Preview Hero" onerror="this.src='assets/images/property-placeholder.svg'">
+                </div>
+
+                <!-- Carousel Thumbnails Navigation -->
+                <div class="preview-carousel-nav">
+                  <button class="carousel-nav-btn" onclick="prevHero()" title="Previous image">
+                    <i data-lucide="chevron-left" style="width: 16px; height: 16px;"></i>
+                  </button>
+                  <div id="prevCarouselThumbs" class="carousel-mini-thumbs">
+                    <!-- Populated dynamically -->
+                  </div>
+                  <button class="carousel-nav-btn" onclick="nextHero()" title="Next image">
+                    <i data-lucide="chevron-right" style="width: 16px; height: 16px;"></i>
+                  </button>
+                </div>
+
+                <!-- Property Title and Description -->
+                <h3 id="prevPropTitle" class="preview-prop-title">Premium Commercial Office Space</h3>
+                <p id="prevPropDesc" class="preview-prop-desc">A perfect space for your business growth with modern design, prime location and world-class amenities.</p>
+
+                <!-- Key Highlights Row in Preview -->
+                <div id="prevHighlightsGrid" class="preview-highlights-grid">
+                  <!-- Dynamically populated -->
+                </div>
+
+                <!-- Floor Plan in Preview -->
+                <div class="preview-sub-section">
+                  <div class="preview-sub-title">
+                    <i data-lucide="layout" style="width: 15px; height: 15px; color: var(--primary);"></i>
+                    <span>Floor Plan</span>
+                  </div>
+                  <div class="preview-floor-img-wrap">
+                    <img id="prevFloorImg" src="assets/images/floorplan.svg" alt="Floor Plan Preview">
+                  </div>
+                </div>
+
+                <!-- Location Highlights in Preview -->
+                <div class="preview-sub-section">
+                  <div class="preview-sub-title">
+                    <i data-lucide="map-pin" style="width: 15px; height: 15px; color: var(--primary);"></i>
+                    <span>Location Highlights</span>
+                  </div>
+                  <div id="prevLocationList" class="preview-location-list">
+                    <!-- Dynamically populated -->
+                  </div>
+                </div>
+
+                <!-- View Brochure CTA Button -->
+                <button class="preview-brochure-btn" onclick="showToast('Downloading Property_Brochure.pdf (2.4 MB)...', 'info')">
+                  <i data-lucide="file-text" style="width: 18px; height: 18px;"></i>
+                  <span>View Brochure (PDF)</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Common & Page JS -->
+  <script src="js/common.js"></script>
+  <script src="js/add-property.js"></script>
+</body>
+</html>
+

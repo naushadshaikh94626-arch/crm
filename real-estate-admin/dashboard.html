@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - RealEstate Admin Panel</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Mobile Overlay -->
+    <div class="sidebar-overlay"></div>
+
+    <!-- COMMON SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <img class="sidebar-logo" src="assets/images/logo.svg" alt="RealEstate Logo">
+        <div class="sidebar-brand">
+          <span class="brand-title">RealEstate</span>
+          <span class="brand-subtitle">ADMIN PANEL</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-item active">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="all-properties.html" class="nav-item">
+          <i data-lucide="building-2"></i>
+          <span>All Properties</span>
+        </a>
+        <a href="add-property.html" class="nav-item">
+          <i data-lucide="plus-circle"></i>
+          <span>Add Properties</span>
+        </a>
+        <a href="share-analytics.html" class="nav-item">
+          <i data-lucide="share-2"></i>
+          <span>Share Analytics</span>
+        </a>
+        <a href="enquiries.html" class="nav-item">
+          <i data-lucide="mail"></i>
+          <span>Enquiries</span>
+          <span class="nav-badge">12</span>
+        </a>
+        <a href="settings.html" class="nav-item">
+          <i data-lucide="settings"></i>
+          <span>Settings</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="logout-btn" onclick="showToast('Logged out successfully', 'info')">
+          <i data-lucide="log-out"></i>
+          <span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+      <!-- TOP HEADER -->
+      <header class="top-header">
+        <div class="header-left">
+          <button class="mobile-menu-btn" aria-label="Toggle menu">
+            <i data-lucide="menu"></i>
+          </button>
+          <div class="global-search">
+            <i data-lucide="search"></i>
+            <input type="text" placeholder="Search properties, clients, enquiries...">
+          </div>
+        </div>
+
+        <div class="header-right">
+          <div class="admin-profile">
+            <div class="admin-avatar">A</div>
+            <div class="admin-info">
+              <span class="admin-name">Admin</span>
+              <span class="admin-role">Real Estate</span>
+            </div>
+            <i data-lucide="chevron-down" class="profile-dropdown-icon"></i>
+
+            <div class="profile-menu">
+              <a href="settings.html"><i data-lucide="user"></i> Admin Profile</a>
+              <a href="settings.html#company"><i data-lucide="building"></i> Company Profile</a>
+              <a href="settings.html#security"><i data-lucide="shield-check"></i> Security & Password</a>
+              <div class="profile-menu-divider"></div>
+              <a href="#" onclick="showToast('Logged out', 'info')"><i data-lucide="log-out"></i> Log Out</a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- PAGE BODY -->
+      <div class="page-body">
+        <!-- Welcome Hero -->
+        <div class="dashboard-welcome">
+          <h1 class="welcome-title">Welcome Back, Admin!</h1>
+          <p class="welcome-subtitle">Here's what's happening with your properties today.</p>
+        </div>
+
+        <!-- 3 Statistics Cards -->
+        <section class="stats-grid">
+          <!-- Stat 1: Total Properties -->
+          <div class="stat-card">
+            <div class="stat-icon-wrapper stat-icon-orange">
+              <i data-lucide="home"></i>
+            </div>
+            <div class="stat-content">
+              <span class="stat-label">Total Properties</span>
+              <span id="statTotalProperties" class="stat-value">48</span>
+              <div class="stat-trend trend-up">
+                <span>↑ +12%</span>
+                <span class="trend-period">vs last month</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stat 2: Total Share -->
+          <div class="stat-card">
+            <div class="stat-icon-wrapper stat-icon-blue">
+              <i data-lucide="link-2"></i>
+            </div>
+            <div class="stat-content">
+              <span class="stat-label">Total Share</span>
+              <span id="statTotalShares" class="stat-value">128</span>
+              <div class="stat-trend trend-up">
+                <span>↑ +24%</span>
+                <span class="trend-period">vs last month</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stat 3: Total Enquires -->
+          <div class="stat-card">
+            <div class="stat-icon-wrapper stat-icon-purple">
+              <i data-lucide="mail"></i>
+            </div>
+            <div class="stat-content">
+              <span class="stat-label">Total Enquires</span>
+              <span id="statTotalEnquiries" class="stat-value">86</span>
+              <div class="stat-trend trend-up">
+                <span>↑ +18%</span>
+                <span class="trend-period">vs last month</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- All Properties Table Section -->
+        <section class="table-section">
+          <div class="section-header-row">
+            <div class="section-title-wrap">
+              <h2 class="section-title">All Properties</h2>
+              <p class="section-subtitle">Manage your properties, edit details, and generate shareable links.</p>
+            </div>
+
+            <div class="table-filter-group">
+              <div class="table-search-input">
+                <i data-lucide="search"></i>
+                <input type="text" id="dashboardSearch" placeholder="Search property...">
+              </div>
+              <button class="filter-toggle-btn" title="Filter Options" onclick="showToast('Filters toggled', 'info')">
+                <i data-lucide="filter" style="width: 16px; height: 16px;"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Table Container -->
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width: 40px;">
+                    <input type="checkbox" id="selectAllProps" class="custom-checkbox">
+                  </th>
+                  <th>Property</th>
+                  <th>Type</th>
+                  <th>Price</th>
+                  <th>Area</th>
+                  <th>Location</th>
+                  <th>Status</th>
+                  <th>Share</th>
+                  <th style="text-align: right; padding-right: 28px;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="dashboardTableBody">
+                <!-- Dynamically populated by dashboard.js -->
+              </tbody>
+            </table>
+
+            <!-- Table Pagination -->
+            <div class="pagination-wrapper">
+              <span id="dashboardPropertyCount">Showing 1 to 8 of 48 properties</span>
+              <div id="dashboardPagination" class="pagination-controls">
+                <!-- Populated by dashboard.js -->
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Common & Page JS -->
+  <script src="js/common.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>
+

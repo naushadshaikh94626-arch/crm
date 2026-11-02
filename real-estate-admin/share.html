@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Shared Property</title>
+  <link rel="stylesheet" href="css/shared-property.css">
+  <script src="js/shared-property.js" defer></script>
+</head>
+<body>
+  <header class="share-header">
+    <img src="assets/images/logo.svg" alt="" class="share-logo">
+    <span>Property Details</span>
+  </header>
+  <main class="share-main">
+    <div id="shareError" class="share-message" role="status" hidden>
+      <h1>Property unavailable</h1>
+      <p id="shareErrorText">This link is invalid or the property is no longer available.</p>
+    </div>
+    <article id="sharedProperty" hidden>
+      <section class="property-hero">
+        <div class="hero-image-wrap">
+          <img id="propertyImage" class="property-image" alt="">
+        </div>
+        <div class="property-summary">
+          <span id="propertyType" class="property-type"></span>
+          <h1 id="propertyTitle"></h1>
+          <p id="propertyLocation" class="property-location"></p>
+          <p id="propertyPrice" class="property-price"></p>
+          <p id="propertyArea" class="property-area"></p>
+        </div>
+      </section>
+      <div id="propertyGallery" class="property-gallery" aria-label="Property photos"></div>
+      <section id="descriptionSection" class="property-section" hidden>
+        <h2>About this property</h2>
+        <p id="propertyDescription"></p>
+      </section>
+      <section id="featuresSection" class="property-section" hidden>
+        <h2>Property highlights</h2>
+        <div id="propertyFeatures" class="feature-grid"></div>
+      </section>
+      <section id="locationsSection" class="property-section" hidden>
+        <h2>Nearby</h2>
+        <ul id="propertyLocations" class="location-list"></ul>
+      </section>
+    </article>
+  </main>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
+  <defs>
+    <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fdba74" />
+      <stop offset="35%" stop-color="#f97316" />
+      <stop offset="70%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <linearGradient id="bldgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#334155" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+    <linearGradient id="glassGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#ea580c" stop-opacity="0.8" />
+    </linearGradient>
+  </defs>
+  <!-- Sky -->
+  <rect width="800" height="500" fill="url(#skyGrad)" />
+  
+  <!-- Modern Building -->
+  <polygon points="180,480 180,140 420,80 620,120 620,480" fill="url(#bldgGrad)" stroke="#475569" stroke-width="2" />
+  
+  <!-- Architectural Grid / Windows -->
+  <g fill="url(#glassGrad)">
+    <!-- Floor 4 -->
+    <rect x="210" y="150" width="80" height="40" rx="3" />
+    <rect x="310" y="135" width="90" height="40" rx="3" />
+    <rect x="420" y="145" width="80" height="40" rx="3" />
+    <rect x="520" y="160" width="70" height="40" rx="3" />
+
+    <!-- Floor 3 -->
+    <rect x="210" y="210" width="80" height="45" rx="3" />
+    <rect x="310" y="195" width="90" height="45" rx="3" />
+    <rect x="420" y="205" width="80" height="45" rx="3" />
+    <rect x="520" y="220" width="70" height="45" rx="3" />
+
+    <!-- Floor 2 -->
+    <rect x="210" y="275" width="80" height="45" rx="3" />
+    <rect x="310" y="260" width="90" height="45" rx="3" />
+    <rect x="420" y="270" width="80" height="45" rx="3" />
+    <rect x="520" y="285" width="70" height="45" rx="3" />
+
+    <!-- Floor 1 -->
+    <rect x="210" y="340" width="80" height="50" rx="3" />
+    <rect x="310" y="325" width="90" height="50" rx="3" />
+    <rect x="420" y="335" width="80" height="50" rx="3" />
+    <rect x="520" y="350" width="70" height="50" rx="3" />
+    
+    <!-- Ground Floor Lobby -->
+    <rect x="210" y="410" width="380" height="70" rx="4" fill="#ffedd5" opacity="0.95" />
+  </g>
+  
+  <!-- Ground & Street Light -->
+  <rect x="0" y="480" width="800" height="20" fill="#0f172a" />
+</svg>
