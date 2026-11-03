@@ -4,473 +4,6 @@
  * Share Modal, Toast notifications, and global search.
  */
 
-// Initial Default Properties Dataset
-const DEFAULT_PROPERTIES = [
-  {
-    id: "P1001",
-    title: "Premium Office Space",
-    type: "Commercial Office",
-    price: "₹ 70,00,000",
-    priceUnit: "Onwards*",
-    area: "250 - 800 Sq.ft",
-    carpetArea: "250 - 800",
-    location: "PCMC, Pune",
-    status: "Published",
-    image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80",
-    gallery: [
-      "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1527192491265-7e15c55b1ed2?auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=800&q=80"
-    ],
-    features: [
-      { name: "Carpet Area", value: "250 - 800 Sq.ft" },
-      { name: "Internal Height", value: "11 Ft" },
-      { name: "Private Terraces", value: "Available" },
-      { name: "Expected Entry ROI", value: "7%" },
-      { name: "Vastu Compliant", value: "Yes" }
-    ],
-    locationAdvantages: [
-      "2 Mins - Metro Station",
-      "2 Mins - Railway Station",
-      "10 Mins - Hinjewadi IT Park",
-      "15 Mins - Pune Junction",
-      "20 Mins - Pune Airport"
-    ],
-    sharesCount: 142,
-    clicksCount: 1240,
-    isFavourite: true,
-    description: "A perfect space for your business growth with modern design, prime location and world-class amenities in the heart of PCMC, Pune."
-  },
-  {
-    id: "P1002",
-    title: "Retail Shop Space",
-    type: "Commercial Shop",
-    price: "₹ 1.10 Cr",
-    priceUnit: "Onwards*",
-    area: "200 - 450 Sq.ft",
-    carpetArea: "200 - 450",
-    location: "PCMC, Pune",
-    status: "Published",
-    image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80",
-    gallery: [
-      "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?auto=format&fit=crop&w=800&q=80"
-    ],
-    features: [
-      { name: "Frontage", value: "25 Ft Glass Facade" },
-      { name: "Footfall", value: "High Visibility" },
-      { name: "Power Backup", value: "100% DG Set" }
-    ],
-    locationAdvantages: [
-      "Facing Main Highway",
-      "Near Bus Terminal",
-      "Surrounded by 10,000+ Families"
-    ],
-    sharesCount: 88,
-    clicksCount: 820,
-    isFavourite: false,
-    description: "High street retail showroom space with excellent footfall and panoramic glass frontage on a high density commercial corridor."
-  },
-  {
-    id: "P1003",
-    title: "Residential Plot",
-    type: "Residential Plot",
-    price: "₹ 45,00,000",
-    priceUnit: "Onwards*",
-    area: "1000 - 2000 Sq.ft",
-    carpetArea: "1000 - 2000",
-    location: "Hinjewadi, Pune",
-    status: "Draft",
-    image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=80",
-    gallery: [
-      "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=80"
-    ],
-    features: [
-      { name: "Plot Demarcation", value: "Fenced & Gated" },
-      { name: "Road Width", value: "40 Ft Internal Road" },
-      { name: "Water & Electric", value: "Ready Connections" }
-    ],
-    locationAdvantages: [
-      "5 Mins from Phase 1 IT SEZ",
-      "Adjacent to Proposed Ring Road",
-      "Scenic Hillview Surrounding"
-    ],
-    sharesCount: 34,
-    clicksCount: 310,
-    isFavourite: false,
-    description: "Clear title PMRDA sanctioned residential NA plots in a gated community with luxury clubhouse and landscaped avenues."
-  },
-  {
-    id: "P1004",
-    title: "Industrial Land",
-    type: "Industrial Land",
-    price: "₹ 90,00,000",
-    priceUnit: "Onwards*",
-    area: "5000 - 10000 Sq.ft",
-    carpetArea: "5000 - 10000",
-    location: "Chakan, Pune",
-    status: "Published",
-    image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80",
-    gallery: [
-      "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80"
-    ],
-    features: [
-      { name: "Zoning", value: "MIDC Industrial Zone" },
-      { name: "Power", value: "Express Feeder 250kVA" },
-      { name: "Access", value: "Heavy Container Movement" }
-    ],
-    locationAdvantages: [
-      "Direct Pune-Nashik Highway Access",
-      "10 Mins from Auto Cluster",
-      "Near Talegaon Toll Plaza"
-    ],
-    sharesCount: 65,
-    clicksCount: 540,
-    isFavourite: false,
-    description: "Industrial warehouse land suitable for manufacturing, logistics, and heavy engineering facilities with complete infrastructure."
-  },
-  {
-    id: "P1005",
-    title: "IT Office Space",
-    type: "Commercial Office",
-    price: "₹ 1.25 Cr",
-    priceUnit: "Onwards*",
-    area: "500 - 1200 Sq.ft",
-    carpetArea: "500 - 1200",
-    location: "Hinjewadi, Pune",
-    status: "Published",
-    image: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80",
-    gallery: [
-      "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80"
-    ],
-    features: [
-      { name: "Fitout", value: "Warm Shell / Furnished" },
-      { name: "HVAC", value: "Centralized Chiller" },
-      { name: "Certifications", value: "IGBC Gold Rated" }
-    ],
-    locationAdvantages: [
-      "Walking Distance to Infosys Campus",
-      "Adjacent to Metro Phase 3 Line",
-      "Food Court & Gym on Terrace"
-    ],
-    sharesCount: 112,
-    clicksCount: 980,
-    isFavourite: true,
-    description: "Grade-A IT park office space designed for high-performance technology companies with flexible floor plates."
-  },
-  {
-    id: "P1006",
-    title: "High Street Shop",
-    type: "Commercial Shop",
-    price: "₹ 85,00,000",
-    priceUnit: "Onwards*",
-    area: "300 - 600 Sq.ft",
-    carpetArea: "300 - 600",
-    location: "Pune",
-    status: "Archived",
-    image: "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?auto=format&fit=crop&w=800&q=80",
-    gallery: [
-      "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?auto=format&fit=crop&w=800&q=80"
-    ],
-    features: [
-      { name: "Ceiling Height", value: "14 Ft Duplex Possibility" },
-      { name: "Parking", value: "Designated Customer Stalls" }
-    ],
-    locationAdvantages: [
-      "Main Camp Commercial Boulevard",
-      "High Affluent Footfall"
-    ],
-    sharesCount: 42,
-    clicksCount: 390,
-    isFavourite: false,
-    description: "Premium retail boutique space previously occupied by a designer fashion label in prime city location."
-  },
-  {
-    id: "P1007",
-    title: "Luxury Villa Plot",
-    type: "Residential Plot",
-    price: "₹ 1.50 Cr",
-    priceUnit: "Onwards*",
-    area: "2000 - 4000 Sq.ft",
-    carpetArea: "2000 - 4000",
-    location: "Pune",
-    status: "Published",
-    image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80",
-    gallery: [
-      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80"
-    ],
-    features: [
-      { name: "Plot Size", value: "3,200 Sq.Ft NA Land" },
-      { name: "Clubhouse", value: "Olympic Pool & Spa" },
-      { name: "Security", value: "3-Tier RFID Access" }
-    ],
-    locationAdvantages: [
-      "Bavdhan Hill Foothills",
-      "15 Mins to Kothrud",
-      "Scenic Valley Outlook"
-    ],
-    sharesCount: 94,
-    clicksCount: 1150,
-    isFavourite: true,
-    description: "Exclusive bespoke villa plots nestled in serene green hills with ultra-luxury township amenities."
-  },
-  {
-    id: "P1008",
-    title: "Co-Working Space",
-    type: "Commercial Office",
-    price: "₹ 75,00,000",
-    priceUnit: "Onwards*",
-    area: "400 - 1000 Sq.ft",
-    carpetArea: "400 - 1000",
-    location: "Viman Nagar, Pune",
-    status: "Draft",
-    image: "https://images.unsplash.com/photo-1527192491265-7e15c55b1ed2?auto=format&fit=crop&w=800&q=80",
-    gallery: [
-      "https://images.unsplash.com/photo-1527192491265-7e15c55b1ed2?auto=format&fit=crop&w=800&q=80"
-    ],
-    features: [
-      { name: "Capacity", value: "28 Hot Desks + 2 Cabins" },
-      { name: "High-Speed WiFi", value: "Redundant Fiber Optic" },
-      { name: "Pantry", value: "Full-Service Coffee Bar" }
-    ],
-    locationAdvantages: [
-      "5 Mins to Pune International Airport",
-      "Near Phoenix Marketcity",
-      "Walkable to Metro Station"
-    ],
-    sharesCount: 51,
-    clicksCount: 460,
-    isFavourite: false,
-    description: "Plug-and-play modern shared office workspace ready with ergonomic seating, meeting rooms and community spaces."
-  },
-  {
-    id: "P1009",
-    title: "Executive Penthouse",
-    type: "Residential Penthouse",
-    price: "₹ 3.20 Cr",
-    priceUnit: "Onwards*",
-    area: "3500 - 4500 Sq.ft",
-    carpetArea: "3500 - 4500",
-    location: "Baner, Pune",
-    status: "Published",
-    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
-    gallery: [
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80"
-    ],
-    features: [
-      { name: "Bedrooms", value: "4 BHK Duplex + Servant Room" },
-      { name: "Terrace Deck", value: "Private Infinity Splash Pool" },
-      { name: "Parking", value: "3 Reserved Basement Stalls" }
-    ],
-    locationAdvantages: [
-      "Prime High Street Baner",
-      "Quick Mumbai-Pune Expressway Connect"
-    ],
-    sharesCount: 168,
-    clicksCount: 1820,
-    isFavourite: true,
-    description: "Ultra-luxury sky villa penthouse with 270-degree skyline views, double-height living room and private elevators."
-  },
-  {
-    id: "P1010",
-    title: "Smart Tech Park",
-    type: "Commercial Office",
-    price: "₹ 2.10 Cr",
-    priceUnit: "Onwards*",
-    area: "1200 - 2400 Sq.ft",
-    carpetArea: "1200 - 2400",
-    location: "Kharadi, Pune",
-    status: "Published",
-    image: "https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=800&q=80",
-    gallery: [
-      "https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=800&q=80"
-    ],
-    features: [
-      { name: "Floor Efficiency", value: "82% Carpet Efficiency" },
-      { name: "Power", value: "Dual Grid 100% Redundancy" }
-    ],
-    locationAdvantages: [
-      "EON Free Zone IT Park Hub",
-      "Adjacent to World Trade Center"
-    ],
-    sharesCount: 76,
-    clicksCount: 710,
-    isFavourite: false,
-    description: "Modern commercial workspace with high-speed elevators, smart BMS integration and LEED Platinum rating."
-  },
-  {
-    id: "P1011",
-    title: "Warehousing Hub",
-    type: "Industrial Land",
-    price: "₹ 1.80 Cr",
-    priceUnit: "Onwards*",
-    area: "8000 - 15000 Sq.ft",
-    carpetArea: "8000 - 15000",
-    location: "Talegaon, Pune",
-    status: "Draft",
-    image: "https://images.unsplash.com/photo-1587293852726-70cdb56c2866?auto=format&fit=crop&w=800&q=80",
-    gallery: [
-      "https://images.unsplash.com/photo-1587293852726-70cdb56c2866?auto=format&fit=crop&w=800&q=80"
-    ],
-    features: [
-      { name: "Clear Height", value: "12 Metres" },
-      { name: "Floor Load", value: "6 Tonnes/Sq.M" }
-    ],
-    locationAdvantages: [
-      "Expressway Proximity",
-      "Near Floriculture & Auto Belts"
-    ],
-    sharesCount: 22,
-    clicksCount: 190,
-    isFavourite: false,
-    description: "Pre-engineered logistics warehouse building with automated dock levelers and wide circulation aprons."
-  },
-  {
-    id: "P1012",
-    title: "Boulevard Showroom",
-    type: "Commercial Shop",
-    price: "₹ 1.45 Cr",
-    priceUnit: "Onwards*",
-    area: "400 - 900 Sq.ft",
-    carpetArea: "400 - 900",
-    location: "Koregaon Park, Pune",
-    status: "Archived",
-    image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=80",
-    gallery: [
-      "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=80"
-    ],
-    features: [
-      { name: "Location Grade", value: "Triple-A Lane 6" },
-      { name: "Frontage", value: "Corner Glass Wing" }
-    ],
-    locationAdvantages: [
-      "Pune's Most Prestigious Lifestyle Lane",
-      "High Net-Worth Resident Base"
-    ],
-    sharesCount: 39,
-    clicksCount: 380,
-    isFavourite: false,
-    description: "Prestigious boutique retail showroom on prime boulevard, ideal for high-end jewelers, luxury autos, or flagship salons."
-  }
-];
-
-// Initial Enquiries Dataset
-const DEFAULT_ENQUIRIES = [
-  {
-    id: "ENQ-701",
-    clientName: "Rahul Sharma",
-    phone: "+91 98234 56789",
-    email: "rahul.sharma@gmail.com",
-    propertyId: "P1001",
-    propertyName: "Premium Office Space",
-    date: "2026-11-01",
-    time: "10:30 AM",
-    source: "WhatsApp",
-    status: "New",
-    budget: "₹ 75 Lakhs",
-    notes: "Looking for immediate possession for an IT consulting office of 15 people."
-  },
-  {
-    id: "ENQ-702",
-    clientName: "Ananya Deshmukh",
-    phone: "+91 98901 23456",
-    email: "ananya.d@deshmukhengg.in",
-    propertyId: "P1002",
-    propertyName: "Retail Shop Space",
-    date: "2026-11-01",
-    time: "11:45 AM",
-    source: "Website",
-    status: "New",
-    budget: "₹ 1.10 Cr",
-    notes: "Interested in ground floor retail showroom for an organic café chain."
-  },
-  {
-    id: "ENQ-703",
-    clientName: "Vikram Malhotra",
-    phone: "+91 97654 32109",
-    email: "vikram.malhotra@zenithtech.com",
-    propertyId: "P1005",
-    propertyName: "IT Office Space",
-    date: "2026-10-31",
-    time: "02:15 PM",
-    source: "Facebook Ads",
-    status: "Contacted",
-    budget: "₹ 1.30 Cr",
-    notes: "Spoke over phone. Sent detailed floor plan and brochure. Site visit planned Saturday."
-  },
-  {
-    id: "ENQ-704",
-    clientName: "Dr. Sunita Kulkarni",
-    phone: "+91 94220 98765",
-    email: "drsunita@kulkarniclinic.org",
-    propertyId: "P1007",
-    propertyName: "Luxury Villa Plot",
-    date: "2026-10-30",
-    time: "04:00 PM",
-    source: "Portal",
-    status: "Interested",
-    budget: "₹ 1.60 Cr",
-    notes: "Visited site yesterday. Liked plot #14. Negotiating payment milestone structure."
-  },
-  {
-    id: "ENQ-705",
-    clientName: "Sanjay Patel",
-    phone: "+91 98221 44556",
-    email: "sanjay.patel@patellogistics.com",
-    propertyId: "P1004",
-    propertyName: "Industrial Land",
-    date: "2026-10-29",
-    time: "01:20 PM",
-    source: "WhatsApp",
-    status: "Converted",
-    budget: "₹ 95 Lakhs",
-    notes: "Token advance received. Agreement for sale scheduled for registration on 10th."
-  },
-  {
-    id: "ENQ-706",
-    clientName: "Kavita Rathi",
-    phone: "+91 93710 65432",
-    email: "kavita.rathi@creativestudios.co",
-    propertyId: "P1008",
-    propertyName: "Co-Working Space",
-    date: "2026-10-28",
-    time: "05:10 PM",
-    source: "Website",
-    status: "Contacted",
-    budget: "₹ 80 Lakhs",
-    notes: "Inquiring about potential rental yield and existing lease tenancy period."
-  },
-  {
-    id: "ENQ-707",
-    clientName: "Amitabh Sen",
-    phone: "+91 98112 34567",
-    email: "amitabh.sen@senassociates.com",
-    propertyId: "P1009",
-    propertyName: "Executive Penthouse",
-    date: "2026-10-28",
-    time: "06:30 PM",
-    source: "Direct",
-    status: "Interested",
-    budget: "₹ 3.50 Cr",
-    notes: "High net-worth client from Mumbai looking for weekend penthouse in Baner."
-  },
-  {
-    id: "ENQ-708",
-    clientName: "Pooja Varma",
-    phone: "+91 98200 11223",
-    email: "pooja.v@varmaenterprises.com",
-    propertyId: "P1003",
-    propertyName: "Residential Plot",
-    date: "2026-10-27",
-    time: "12:00 PM",
-    source: "Facebook Ads",
-    status: "Converted",
-    budget: "₹ 48 Lakhs",
-    notes: "All documentation verified. Loan sanction in process with SBI."
-  }
-];
-
 // Initial Settings Dataset
 const DEFAULT_SETTINGS = {
   adminName: "Admin",
@@ -488,18 +21,63 @@ const DEFAULT_SETTINGS = {
   notifyShareMilestones: true
 };
 
+const LEGACY_DEMO_PROPERTY_TITLES = new Map([
+  ['P1001', 'Premium Office Space'],
+  ['P1002', 'Retail Shop Space'],
+  ['P1003', 'Residential Plot'],
+  ['P1004', 'Industrial Land'],
+  ['P1005', 'IT Office Space'],
+  ['P1006', 'High Street Shop'],
+  ['P1007', 'Luxury Villa Plot'],
+  ['P1008', 'Co-Working Space'],
+  ['P1009', 'Executive Penthouse'],
+  ['P1010', 'Smart Tech Park'],
+  ['P1011', 'Warehousing Hub'],
+  ['P1012', 'Boulevard Showroom']
+]);
+const LEGACY_DEMO_ENQUIRY_NAMES = new Map([
+  ['ENQ-701', 'Rahul Sharma'],
+  ['ENQ-702', 'Ananya Deshmukh'],
+  ['ENQ-703', 'Vikram Malhotra'],
+  ['ENQ-704', 'Dr. Sunita Kulkarni'],
+  ['ENQ-705', 'Sanjay Patel'],
+  ['ENQ-706', 'Kavita Rathi'],
+  ['ENQ-707', 'Amitabh Sen'],
+  ['ENQ-708', 'Pooja Varma']
+]);
+
+function updateEnquiryBadges() {
+  const newEnquiryCount = DataStore.getEnquiries()
+    .filter(enquiry => String(enquiry.status || '').toLowerCase() === 'new').length;
+  document.querySelectorAll('[data-enquiry-count]').forEach(badge => {
+    badge.textContent = newEnquiryCount;
+  });
+}
+
 // Data Store Helper Functions
 const DataStore = {
   getProperties() {
     const raw = localStorage.getItem('re_properties');
     if (!raw) {
-      localStorage.setItem('re_properties', JSON.stringify(DEFAULT_PROPERTIES));
-      return DEFAULT_PROPERTIES;
+      this.saveProperties([]);
+      localStorage.setItem('re_properties_demo_migrated', 'true');
+      return [];
     }
     try {
-      return JSON.parse(raw);
-    } catch (e) {
-      return DEFAULT_PROPERTIES;
+      const properties = JSON.parse(raw);
+      if (!Array.isArray(properties)) throw new TypeError('Stored properties must be an array.');
+      if (localStorage.getItem('re_properties_demo_migrated') !== 'true') {
+        const currentProperties = properties.filter(property =>
+          LEGACY_DEMO_PROPERTY_TITLES.get(property.id) !== property.title
+        );
+        if (currentProperties.length !== properties.length) this.saveProperties(currentProperties);
+        localStorage.setItem('re_properties_demo_migrated', 'true');
+        return currentProperties;
+      }
+      return properties;
+    } catch (error) {
+      console.error('Unable to load stored properties.', error);
+      throw error;
     }
   },
 
@@ -540,13 +118,25 @@ const DataStore = {
   getEnquiries() {
     const raw = localStorage.getItem('re_enquiries');
     if (!raw) {
-      localStorage.setItem('re_enquiries', JSON.stringify(DEFAULT_ENQUIRIES));
-      return DEFAULT_ENQUIRIES;
+      this.saveEnquiries([]);
+      localStorage.setItem('re_enquiries_demo_migrated', 'true');
+      return [];
     }
     try {
-      return JSON.parse(raw);
-    } catch (e) {
-      return DEFAULT_ENQUIRIES;
+      const enquiries = JSON.parse(raw);
+      if (!Array.isArray(enquiries)) throw new TypeError('Stored enquiries must be an array.');
+      if (localStorage.getItem('re_enquiries_demo_migrated') !== 'true') {
+        const currentEnquiries = enquiries.filter(enquiry =>
+          LEGACY_DEMO_ENQUIRY_NAMES.get(enquiry.id) !== enquiry.clientName
+        );
+        if (currentEnquiries.length !== enquiries.length) this.saveEnquiries(currentEnquiries);
+        localStorage.setItem('re_enquiries_demo_migrated', 'true');
+        return currentEnquiries;
+      }
+      return enquiries;
+    } catch (error) {
+      console.error('Unable to load stored enquiries.', error);
+      throw error;
     }
   },
 
@@ -831,6 +421,7 @@ async function openShareModal(propertyId) {
 
     prop.sharesCount = (prop.sharesCount || 0) + 1;
     DataStore.updateProperty(prop.id, { sharesCount: prop.sharesCount });
+    if (typeof loadDashboardStats === 'function') loadDashboardStats();
   } catch (error) {
     console.error('Unable to create cross-device property share link:', error);
     if (requestId !== activeModalShareRequest) return;
@@ -1012,6 +603,8 @@ document.addEventListener('DOMContentLoaded', () => {
   DataStore.getProperties();
   DataStore.getEnquiries();
   DataStore.getSettings();
+
+  updateEnquiryBadges();
 
   highlightActiveNav();
   initMobileMenu();

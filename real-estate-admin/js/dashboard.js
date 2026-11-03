@@ -14,14 +14,11 @@ function loadDashboardStats() {
   const totalSharesEl = document.getElementById('statTotalShares');
   const totalEnquiriesEl = document.getElementById('statTotalEnquiries');
 
-  if (totalPropsEl) totalPropsEl.textContent = '48'; // Or properties.length + 36 for simulated 48
+  if (totalPropsEl) totalPropsEl.textContent = properties.length;
   if (totalSharesEl) {
-    const totalShares = properties.reduce((acc, p) => acc + (p.sharesCount || 0), 0) + 128;
-    totalSharesEl.textContent = '128';
+    totalSharesEl.textContent = properties.reduce((total, property) => total + (Number(property.sharesCount) || 0), 0);
   }
-  if (totalEnquiriesEl) {
-    totalEnquiriesEl.textContent = '86';
-  }
+  if (totalEnquiriesEl) totalEnquiriesEl.textContent = enquiries.length;
 }
 
 function renderDashboardTable() {
@@ -29,6 +26,8 @@ function renderDashboardTable() {
   const countLabel = document.getElementById('dashboardPropertyCount');
   if (!tableBody) return;
 
+  const totalPages = Math.ceil(filteredProperties.length / itemsPerPage);
+  currentPage = totalPages === 0 ? 1 : Math.min(currentPage, totalPages);
   const startIdx = (currentPage - 1) * itemsPerPage;
   const paginatedItems = filteredProperties.slice(startIdx, startIdx + itemsPerPage);
 
@@ -41,6 +40,7 @@ function renderDashboardTable() {
       </tr>
     `;
     if (countLabel) countLabel.textContent = `Showing 0 of ${filteredProperties.length} properties`;
+    renderPagination();
     return;
   }
 
@@ -115,8 +115,7 @@ function renderDashboardTable() {
   `).join('');
 
   if (countLabel) {
-    const endIdx = Math.min(startIdx + itemsPerPage, 48);
-    countLabel.textContent = `Showing ${startIdx + 1} to ${Math.min(startIdx + itemsPerPage, filteredProperties.length)} of 48 properties`;
+    countLabel.textContent = `Showing ${startIdx + 1} to ${Math.min(startIdx + itemsPerPage, filteredProperties.length)} of ${filteredProperties.length} properties`;
   }
 
   renderPagination();
@@ -127,9 +126,9 @@ function renderPagination() {
   const container = document.getElementById('dashboardPagination');
   if (!container) return;
 
-  const totalPages = Math.max(5, Math.ceil(filteredProperties.length / itemsPerPage));
+  const totalPages = Math.ceil(filteredProperties.length / itemsPerPage);
   let html = `
-    <button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">
+    <button class="page-btn" ${currentPage <= 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">
       <i data-lucide="chevron-left" style="width: 16px; height: 16px;"></i>
     </button>
   `;
@@ -143,7 +142,7 @@ function renderPagination() {
   }
 
   html += `
-    <button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">
+    <button class="page-btn" ${totalPages === 0 || currentPage >= totalPages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">
       <i data-lucide="chevron-right" style="width: 16px; height: 16px;"></i>
     </button>
   `;
@@ -211,9 +210,12 @@ function duplicateProperty(id) {
   cloned.id = `P${Math.floor(1000 + Math.random() * 9000)}`;
   cloned.title = `${cloned.title} (Copy)`;
   cloned.status = 'Draft';
+  cloned.sharesCount = 0;
+  cloned.clicksCount = 0;
   DataStore.addProperty(cloned);
   showToast('Property duplicated as draft!', 'success');
   filteredProperties = DataStore.getProperties();
+  loadDashboardStats();
   renderDashboardTable();
 }
 
@@ -229,6 +231,7 @@ function deletePropertyRow(id) {
     DataStore.deleteProperty(id);
     showToast('Property deleted successfully', 'info');
     filteredProperties = DataStore.getProperties();
+    loadDashboardStats();
     renderDashboardTable();
   }
 }
@@ -240,4 +243,3 @@ document.addEventListener('DOMContentLoaded', () => {
   initDashboardSearch();
   initSelectAllCheckbox();
 });
-

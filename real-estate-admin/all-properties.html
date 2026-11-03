@@ -48,7 +48,7 @@
         <a href="enquiries.html" class="nav-item">
           <i data-lucide="mail"></i>
           <span>Enquiries</span>
-          <span class="nav-badge">12</span>
+          <span class="nav-badge" data-enquiry-count>0</span>
         </a>
         <a href="settings.html" class="nav-item">
           <i data-lucide="settings"></i>
@@ -130,16 +130,16 @@
         <div class="filter-tabs-row">
           <div class="status-tabs">
             <button class="status-tab active" onclick="setStatusFilter('All', this)">
-              All <span id="tabCountAll" class="tab-count">(48)</span>
+              All <span id="tabCountAll" class="tab-count">(0)</span>
             </button>
             <button class="status-tab" onclick="setStatusFilter('Draft', this)">
-              Draft <span id="tabCountDraft" class="tab-count">(6)</span>
+              Draft <span id="tabCountDraft" class="tab-count">(0)</span>
             </button>
             <button class="status-tab" onclick="setStatusFilter('Published', this)">
-              Published <span id="tabCountPublished" class="tab-count">(36)</span>
+              Published <span id="tabCountPublished" class="tab-count">(0)</span>
             </button>
             <button class="status-tab" onclick="setStatusFilter('Archived', this)">
-              Archived <span id="tabCountArchived" class="tab-count">(6)</span>
+              Archived <span id="tabCountArchived" class="tab-count">(0)</span>
             </button>
           </div>
 
@@ -182,7 +182,7 @@
 
         <!-- Pagination -->
         <div class="pagination-wrapper" style="border-radius: var(--radius-lg); border: 1px solid var(--border-color); margin-top: 10px;">
-          <span id="propertiesCountLabel">Showing 1-8 of 48 properties</span>
+          <span id="propertiesCountLabel">Showing 0-0 of 0 properties</span>
           <div id="propertiesPagination" class="pagination-controls">
             <!-- Populated by properties.js -->
           </div>
@@ -199,4 +199,3 @@
   <script src="js/properties.js"></script>
 </body>
 </html>
-

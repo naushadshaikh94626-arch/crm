@@ -390,7 +390,7 @@ function collectFormData(status = 'Published') {
     floorPlan: propertyFormState.floorPlan,
     locationAdvantages: [...propertyFormState.locationAdvantages],
     description: desc,
-    sharesCount: 1,
+    sharesCount: 0,
     clicksCount: 0,
     isFavourite: false
   };

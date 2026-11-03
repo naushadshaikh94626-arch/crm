@@ -15,10 +15,10 @@ function loadPropertiesData() {
 }
 
 function updateFilterTabCounts() {
-  const countAll = 48; // simulated full pool
-  const countDraft = allProperties.filter(p => p.status === 'Draft').length + 4;
-  const countPublished = allProperties.filter(p => p.status === 'Published').length + 30;
-  const countArchived = allProperties.filter(p => p.status === 'Archived').length + 4;
+  const countAll = allProperties.length;
+  const countDraft = allProperties.filter(p => p.status === 'Draft').length;
+  const countPublished = allProperties.filter(p => p.status === 'Published').length;
+  const countArchived = allProperties.filter(p => p.status === 'Archived').length;
 
   const countAllEl = document.getElementById('tabCountAll');
   const countDraftEl = document.getElementById('tabCountDraft');
@@ -44,6 +44,8 @@ function getFilteredList() {
 
 function renderProperties() {
   const filtered = getFilteredList();
+  const totalPages = Math.ceil(filtered.length / itemsPerPage);
+  currentPage = totalPages === 0 ? 1 : Math.min(currentPage, totalPages);
   const startIdx = (currentPage - 1) * itemsPerPage;
   const pageItems = filtered.slice(startIdx, startIdx + itemsPerPage);
 
@@ -52,7 +54,7 @@ function renderProperties() {
   const countLabel = document.getElementById('propertiesCountLabel');
 
   if (countLabel) {
-    countLabel.textContent = `Showing ${filtered.length > 0 ? startIdx + 1 : 0}-${Math.min(startIdx + itemsPerPage, filtered.length)} of 48 properties`;
+    countLabel.textContent = `Showing ${filtered.length > 0 ? startIdx + 1 : 0}-${Math.min(startIdx + itemsPerPage, filtered.length)} of ${filtered.length} properties`;
   }
 
   // Render Grid View
@@ -168,9 +170,9 @@ function renderPaginationControls(totalCount) {
   const container = document.getElementById('propertiesPagination');
   if (!container) return;
 
-  const totalPages = Math.max(5, Math.ceil(totalCount / itemsPerPage));
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
   let html = `
-    <button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="goToPage(${currentPage - 1})">
+    <button class="page-btn" ${currentPage <= 1 ? 'disabled' : ''} onclick="goToPage(${currentPage - 1})">
       <i data-lucide="chevron-left" style="width: 16px; height: 16px;"></i>
     </button>
   `;
@@ -184,7 +186,7 @@ function renderPaginationControls(totalCount) {
   }
 
   html += `
-    <button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="goToPage(${currentPage + 1})">
+    <button class="page-btn" ${totalPages === 0 || currentPage >= totalPages ? 'disabled' : ''} onclick="goToPage(${currentPage + 1})">
       <i data-lucide="chevron-right" style="width: 16px; height: 16px;"></i>
     </button>
   `;
@@ -272,4 +274,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
   renderProperties();
 });
-

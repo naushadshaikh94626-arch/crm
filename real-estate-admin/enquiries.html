@@ -48,7 +48,7 @@
         <a href="enquiries.html" class="nav-item active">
           <i data-lucide="mail"></i>
           <span>Enquiries</span>
-          <span class="nav-badge">12</span>
+          <span class="nav-badge" data-enquiry-count>0</span>
         </a>
         <a href="settings.html" class="nav-item">
           <i data-lucide="settings"></i>
@@ -113,7 +113,7 @@
               <i data-lucide="inbox" style="width: 22px; height: 22px;"></i>
             </div>
             <div class="enquiry-stat-data">
-              <span id="enqStatTotal" class="enquiry-stat-num">86</span>
+              <span id="enqStatTotal" class="enquiry-stat-num">0</span>
               <span class="enquiry-stat-lbl">Total Enquiries</span>
             </div>
           </div>
@@ -123,7 +123,7 @@
               <i data-lucide="bell" style="width: 22px; height: 22px;"></i>
             </div>
             <div class="enquiry-stat-data">
-              <span id="enqStatNew" class="enquiry-stat-num">12</span>
+              <span id="enqStatNew" class="enquiry-stat-num">0</span>
               <span class="enquiry-stat-lbl">New Leads</span>
             </div>
           </div>
@@ -133,7 +133,7 @@
               <i data-lucide="phone-call" style="width: 22px; height: 22px;"></i>
             </div>
             <div class="enquiry-stat-data">
-              <span id="enqStatContacted" class="enquiry-stat-num">34</span>
+              <span id="enqStatContacted" class="enquiry-stat-num">0</span>
               <span class="enquiry-stat-lbl">Contacted</span>
             </div>
           </div>
@@ -143,7 +143,7 @@
               <i data-lucide="heart" style="width: 22px; height: 22px;"></i>
             </div>
             <div class="enquiry-stat-data">
-              <span id="enqStatInterested" class="enquiry-stat-num">28</span>
+              <span id="enqStatInterested" class="enquiry-stat-num">0</span>
               <span class="enquiry-stat-lbl">Interested</span>
             </div>
           </div>
@@ -153,7 +153,7 @@
               <i data-lucide="check-circle" style="width: 22px; height: 22px;"></i>
             </div>
             <div class="enquiry-stat-data">
-              <span id="enqStatConverted" class="enquiry-stat-num">12</span>
+              <span id="enqStatConverted" class="enquiry-stat-num">0</span>
               <span class="enquiry-stat-lbl">Converted</span>
             </div>
           </div>
@@ -162,11 +162,11 @@
         <!-- Filter & Search Toolbar -->
         <div class="enquiries-toolbar">
           <div class="enquiry-filter-tabs">
-            <button class="enquiry-tab active" onclick="filterByStatusTab('All', this)">All (86)</button>
-            <button class="enquiry-tab" onclick="filterByStatusTab('New', this)">New (12)</button>
-            <button class="enquiry-tab" onclick="filterByStatusTab('Contacted', this)">Contacted (34)</button>
-            <button class="enquiry-tab" onclick="filterByStatusTab('Interested', this)">Interested (28)</button>
-            <button class="enquiry-tab" onclick="filterByStatusTab('Converted', this)">Converted (12)</button>
+            <button class="enquiry-tab active" onclick="filterByStatusTab('All', this)">All (<span id="enquiryTabAllCount">0</span>)</button>
+            <button class="enquiry-tab" onclick="filterByStatusTab('New', this)">New (<span id="enquiryTabNewCount">0</span>)</button>
+            <button class="enquiry-tab" onclick="filterByStatusTab('Contacted', this)">Contacted (<span id="enquiryTabContactedCount">0</span>)</button>
+            <button class="enquiry-tab" onclick="filterByStatusTab('Interested', this)">Interested (<span id="enquiryTabInterestedCount">0</span>)</button>
+            <button class="enquiry-tab" onclick="filterByStatusTab('Converted', this)">Converted (<span id="enquiryTabConvertedCount">0</span>)</button>
           </div>
 
           <div class="enquiry-search-group">
@@ -199,13 +199,8 @@
 
           <!-- Table Footer -->
           <div class="pagination-wrapper">
-            <span id="enquiriesResultCount">Showing 8 of 86 enquiries</span>
-            <div class="pagination-controls">
-              <button class="page-btn active">1</button>
-              <button class="page-btn">2</button>
-              <button class="page-btn">3</button>
-              <button class="page-btn"><i data-lucide="chevron-right" style="width: 14px; height: 14px;"></i></button>
-            </div>
+            <span id="enquiriesResultCount">Showing 0 of 0 enquiries</span>
+            <div class="pagination-controls"></div>
           </div>
         </div>
 
@@ -277,4 +272,3 @@
   <script src="js/enquiries.js"></script>
 </body>
 </html>
-

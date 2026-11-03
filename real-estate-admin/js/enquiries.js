@@ -9,22 +9,31 @@ let activeEnquiries = [];
 function loadEnquiries() {
   activeEnquiries = DataStore.getEnquiries();
   updateEnquiriesStats();
+  updateEnquiryBadges();
   renderEnquiriesTable();
 }
 
 function updateEnquiriesStats() {
   const all = activeEnquiries;
-  const countTotal = 86;
-  const countNew = 12;
-  const countContacted = 34;
-  const countInterested = 28;
-  const countConverted = 12;
+  const countByStatus = status => all.filter(enquiry => String(enquiry.status || '').toLowerCase() === status.toLowerCase()).length;
+  const counts = {
+    total: all.length,
+    new: countByStatus('New'),
+    contacted: countByStatus('Contacted'),
+    interested: countByStatus('Interested'),
+    converted: countByStatus('Converted')
+  };
 
-  document.getElementById('enqStatTotal').textContent = countTotal;
-  document.getElementById('enqStatNew').textContent = countNew;
-  document.getElementById('enqStatContacted').textContent = countContacted;
-  document.getElementById('enqStatInterested').textContent = countInterested;
-  document.getElementById('enqStatConverted').textContent = countConverted;
+  document.getElementById('enqStatTotal').textContent = counts.total;
+  document.getElementById('enqStatNew').textContent = counts.new;
+  document.getElementById('enqStatContacted').textContent = counts.contacted;
+  document.getElementById('enqStatInterested').textContent = counts.interested;
+  document.getElementById('enqStatConverted').textContent = counts.converted;
+  document.getElementById('enquiryTabAllCount').textContent = counts.total;
+  document.getElementById('enquiryTabNewCount').textContent = counts.new;
+  document.getElementById('enquiryTabContactedCount').textContent = counts.contacted;
+  document.getElementById('enquiryTabInterestedCount').textContent = counts.interested;
+  document.getElementById('enquiryTabConvertedCount').textContent = counts.converted;
 }
 
 function getFilteredEnquiries() {
@@ -47,7 +56,7 @@ function renderEnquiriesTable() {
   const filtered = getFilteredEnquiries();
 
   if (countLabel) {
-    countLabel.textContent = `Showing ${filtered.length} of 86 enquiries`;
+    countLabel.textContent = `Showing ${filtered.length} of ${activeEnquiries.length} enquiries`;
   }
 
   if (filtered.length === 0) {
@@ -202,4 +211,3 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
-
