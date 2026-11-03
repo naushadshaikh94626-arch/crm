@@ -139,13 +139,14 @@
               <div class="form-grid-2">
                 <div class="form-group">
                   <label class="form-label" for="inputPropertyTitle">Property Title</label>
-                  <input type="text" id="inputPropertyTitle" class="form-control" placeholder="e.g. Premium Office Space" value="Premium Commercial Office Space">
+                  <input type="text" id="inputPropertyTitle" class="form-control" placeholder="e.g. Premium Office Space">
                 </div>
 
                 <div class="form-group">
                   <label class="form-label" for="selectPropertyType">Property Type</label>
                   <select id="selectPropertyType" class="form-control">
-                    <option value="Commercial Office" selected>Commercial Office</option>
+                    <option value="" selected disabled>Select property type</option>
+                    <option value="Commercial Office">Commercial Office</option>
                     <option value="Commercial Shop">Commercial Shop</option>
                     <option value="Residential Plot">Residential Plot</option>
                     <option value="Industrial Land">Industrial Land</option>
@@ -159,7 +160,7 @@
                 <div class="form-group">
                   <label class="form-label" for="inputPropertyPrice">Price</label>
                   <div class="input-with-unit">
-                    <input type="text" id="inputPropertyPrice" class="form-control" placeholder="e.g. ₹ 70,00,000" value="70,00,000">
+                    <input type="text" id="inputPropertyPrice" class="form-control" placeholder="e.g. ₹ 70,00,000">
                     <span class="input-unit-label">₹ INR</span>
                   </div>
                 </div>
@@ -167,7 +168,7 @@
                 <div class="form-group">
                   <label class="form-label" for="inputCarpetArea">Carpet Area</label>
                   <div class="input-with-unit">
-                    <input type="text" id="inputCarpetArea" class="form-control" placeholder="e.g. 250 - 800" value="250 - 800">
+                    <input type="text" id="inputCarpetArea" class="form-control" placeholder="e.g. 250 - 800">
                     <span class="input-unit-label">Sq.ft</span>
                   </div>
                 </div>
@@ -175,7 +176,19 @@
 
               <div class="form-group">
                 <label class="form-label" for="inputPropertyDesc">Description</label>
-                <textarea id="inputPropertyDesc" class="form-control" placeholder="Write a short description about the property...">A perfect space for your business growth with modern design, prime location and world-class amenities.</textarea>
+                <textarea id="inputPropertyDesc" class="form-control" placeholder="Write a short description about the property..."></textarea>
+              </div>
+
+              <div class="form-group google-form-link-group">
+                <label class="form-label" for="inputGoogleFormUrl">Google Form link (optional)</label>
+                <input type="url" id="inputGoogleFormUrl" class="form-control" placeholder="https://forms.gle/..." autocomplete="url">
+                <div class="google-form-link-actions">
+                  <button id="copyGoogleFormLinkButton" type="button" class="btn btn-secondary" onclick="copyGoogleFormLink()">Copy form link</button>
+                  <button type="button" class="btn google-form-whatsapp-btn" onclick="shareGoogleFormViaWhatsApp()">
+                    <i data-lucide="message-circle" style="width: 16px; height: 16px;"></i>
+                    Share with WhatsApp
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -222,8 +235,8 @@
               </div>
 
               <div class="floor-plan-row">
-                <div class="floor-plan-thumb">
-                  <img id="floorPlanThumbImg" src="assets/images/floorplan.svg" alt="Floor Plan Preview">
+                <div id="floorPlanThumb" class="floor-plan-thumb" hidden>
+                  <img id="floorPlanThumbImg" alt="Floor Plan Preview">
                   <button class="thumb-remove-btn" onclick="removeFloorPlan()" title="Remove floor plan">
                     <i data-lucide="x" style="width: 12px; height: 12px;"></i>
                   </button>
@@ -267,11 +280,11 @@
                 <div class="dropzone-sub">Drag & drop or click to browse</div>
               </div>
 
-              <div class="uploaded-file-card">
+              <div id="uploadedBrochureCard" class="uploaded-file-card" hidden>
                 <div class="file-icon-pdf">PDF</div>
                 <div class="uploaded-file-meta">
-                  <div id="brochureFileName" class="uploaded-file-name">Property_Brochure.pdf</div>
-                  <div id="brochureFileSize" class="uploaded-file-size">2.4 MB</div>
+                  <div id="brochureFileName" class="uploaded-file-name"></div>
+                  <div id="brochureFileSize" class="uploaded-file-size"></div>
                 </div>
                 <button class="dynamic-remove-btn" onclick="removeBrochure()" title="Remove brochure">
                   <i data-lucide="x" style="width: 14px; height: 14px;"></i>
@@ -298,11 +311,11 @@
               <div class="preview-inner">
                 <!-- Hero Image with Carousel Controls -->
                 <div class="preview-hero-wrap">
-                  <img id="prevHeroImage" class="preview-hero-img" src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80" alt="Live Preview Hero" onerror="this.src='assets/images/property-placeholder.svg'">
+                  <img id="prevHeroImage" class="preview-hero-img" src="assets/images/property-placeholder.svg" alt="Live Preview Hero" onerror="this.src='assets/images/property-placeholder.svg'">
                 </div>
 
                 <!-- Carousel Thumbnails Navigation -->
-                <div class="preview-carousel-nav">
+                <div id="prevCarouselNav" class="preview-carousel-nav" hidden>
                   <button class="carousel-nav-btn" onclick="prevHero()" title="Previous image">
                     <i data-lucide="chevron-left" style="width: 16px; height: 16px;"></i>
                   </button>
@@ -315,8 +328,8 @@
                 </div>
 
                 <!-- Property Title and Description -->
-                <h3 id="prevPropTitle" class="preview-prop-title">Premium Commercial Office Space</h3>
-                <p id="prevPropDesc" class="preview-prop-desc">A perfect space for your business growth with modern design, prime location and world-class amenities.</p>
+                <h3 id="prevPropTitle" class="preview-prop-title">Property title</h3>
+                <p id="prevPropDesc" class="preview-prop-desc">Property description will appear here...</p>
 
                 <!-- Key Highlights Row in Preview -->
                 <div id="prevHighlightsGrid" class="preview-highlights-grid">
@@ -324,18 +337,18 @@
                 </div>
 
                 <!-- Floor Plan in Preview -->
-                <div class="preview-sub-section">
+                <div id="previewFloorSection" class="preview-sub-section" hidden>
                   <div class="preview-sub-title">
                     <i data-lucide="layout" style="width: 15px; height: 15px; color: var(--primary);"></i>
                     <span>Floor Plan</span>
                   </div>
                   <div class="preview-floor-img-wrap">
-                    <img id="prevFloorImg" src="assets/images/floorplan.svg" alt="Floor Plan Preview">
+                    <img id="prevFloorImg" alt="Floor Plan Preview">
                   </div>
                 </div>
 
                 <!-- Location Highlights in Preview -->
-                <div class="preview-sub-section">
+                <div id="previewLocationSection" class="preview-sub-section" hidden>
                   <div class="preview-sub-title">
                     <i data-lucide="map-pin" style="width: 15px; height: 15px; color: var(--primary);"></i>
                     <span>Location Highlights</span>
@@ -346,7 +359,7 @@
                 </div>
 
                 <!-- View Brochure CTA Button -->
-                <button class="preview-brochure-btn" onclick="showToast('Downloading Property_Brochure.pdf (2.4 MB)...', 'info')">
+                <button id="previewBrochureButton" class="preview-brochure-btn" hidden onclick="showToast('Brochure download is not available in preview.', 'info')">
                   <i data-lucide="file-text" style="width: 18px; height: 18px;"></i>
                   <span>View Brochure (PDF)</span>
                 </button>

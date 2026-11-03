@@ -7,38 +7,19 @@
 // Initial Form State
 let propertyFormState = {
   id: '',
-  title: 'Premium Commercial Office Space',
-  type: 'Commercial Office',
-  price: '₹ 70,00,000',
-  priceRaw: '7000000',
-  carpetArea: '250 - 800',
-  description: 'A perfect space for your business growth with modern design, prime location and world-class amenities.',
-  images: [
-    'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1527192491265-7e15c55b1ed2?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?auto=format&fit=crop&w=800&q=80'
-  ],
+  title: '',
+  type: '',
+  price: '',
+  googleFormUrl: '',
+  carpetArea: '',
+  description: '',
+  images: [],
   currentHeroIndex: 0,
-  features: [
-    { name: 'Carpet Area', value: '250 - 800 Sq.ft' },
-    { name: 'Internal Height', value: '11 Ft' },
-    { name: 'Private Terraces', value: 'Available' },
-    { name: 'Expected Entry ROI', value: '7%' },
-    { name: 'Vastu Compliant', value: 'Yes' }
-  ],
-  floorPlan: 'assets/images/floorplan.svg',
-  locationAdvantages: [
-    '2 Mins - Metro Station',
-    '2 Mins - Railway Station',
-    '10 Mins - Hinjewadi IT Park',
-    '15 Mins - Pune Junction',
-    '20 Mins - Pune Airport'
-  ],
-  brochureName: 'Property_Brochure.pdf',
-  brochureSize: '2.4 MB'
+  features: [],
+  floorPlan: '',
+  locationAdvantages: [],
+  brochureName: '',
+  brochureSize: ''
 };
 
 // Check if Editing existing property
@@ -52,11 +33,14 @@ function checkEditMode() {
       propertyFormState.title = existing.title;
       propertyFormState.type = existing.type;
       propertyFormState.price = existing.price;
-      propertyFormState.carpetArea = existing.carpetArea || '500 - 1000';
+      propertyFormState.googleFormUrl = existing.googleFormUrl || '';
+      propertyFormState.carpetArea = existing.carpetArea || '';
       propertyFormState.description = existing.description || '';
-      propertyFormState.floorPlan = existing.floorPlan || propertyFormState.floorPlan;
+      propertyFormState.floorPlan = existing.floorPlan || '';
       if (existing.gallery && existing.gallery.length > 0) {
         propertyFormState.images = [...existing.gallery];
+      } else if (existing.image) {
+        propertyFormState.images = [existing.image];
       }
       if (existing.features && existing.features.length > 0) {
         propertyFormState.features = [...existing.features];
@@ -78,12 +62,14 @@ function populateFormFields() {
   const titleInput = document.getElementById('inputPropertyTitle');
   const typeSelect = document.getElementById('selectPropertyType');
   const priceInput = document.getElementById('inputPropertyPrice');
+  const googleFormInput = document.getElementById('inputGoogleFormUrl');
   const carpetInput = document.getElementById('inputCarpetArea');
   const descInput = document.getElementById('inputPropertyDesc');
 
   if (titleInput) titleInput.value = propertyFormState.title;
   if (typeSelect) typeSelect.value = propertyFormState.type;
   if (priceInput) priceInput.value = propertyFormState.price.replace(/[^0-9,.]/g, '');
+  if (googleFormInput) googleFormInput.value = propertyFormState.googleFormUrl;
   if (carpetInput) carpetInput.value = propertyFormState.carpetArea;
   if (descInput) descInput.value = propertyFormState.description;
 
@@ -98,21 +84,31 @@ function updateLivePreview() {
   const prevTitle = document.getElementById('prevPropTitle');
   const prevDesc = document.getElementById('prevPropDesc');
   const prevHero = document.getElementById('prevHeroImage');
+  const prevCarouselNav = document.getElementById('prevCarouselNav');
   const prevThumbs = document.getElementById('prevCarouselThumbs');
   const prevHighlights = document.getElementById('prevHighlightsGrid');
   const prevLocations = document.getElementById('prevLocationList');
+  const floorPlanThumb = document.getElementById('floorPlanThumb');
+  const prevFloor = document.getElementById('prevFloorImg');
 
-  if (prevTitle) prevTitle.textContent = propertyFormState.title || 'Untitled Property';
+  if (prevTitle) prevTitle.textContent = propertyFormState.title || 'Property title';
   if (prevDesc) prevDesc.textContent = propertyFormState.description || 'Property description will appear here...';
+  document.getElementById('previewFloorSection').hidden = !propertyFormState.floorPlan;
+  if (floorPlanThumb) floorPlanThumb.hidden = !propertyFormState.floorPlan;
+  if (propertyFormState.floorPlan) {
+    if (floorPlanThumb) floorPlanThumb.querySelector('img').src = propertyFormState.floorPlan;
+    if (prevFloor) prevFloor.src = propertyFormState.floorPlan;
+  }
 
   // Hero Image
-  if (prevHero && propertyFormState.images.length > 0) {
+  if (prevHero) {
     const curImg = propertyFormState.images[propertyFormState.currentHeroIndex] || propertyFormState.images[0];
-    prevHero.src = curImg;
+    prevHero.src = curImg || 'assets/images/property-placeholder.svg';
   }
 
   // Mini carousel thumbs
   if (prevThumbs) {
+    if (prevCarouselNav) prevCarouselNav.hidden = propertyFormState.images.length === 0;
     prevThumbs.innerHTML = propertyFormState.images.slice(0, 5).map((img, idx) => `
       <img class="carousel-mini-thumb ${idx === propertyFormState.currentHeroIndex ? 'active' : ''}" 
            src="${img}" alt="Preview thumb" 
@@ -124,6 +120,7 @@ function updateLivePreview() {
   // Highlights Grid in Live Preview
   if (prevHighlights) {
     const icons = ['maximize', 'arrow-up-down', 'home', 'trending-up', 'check-circle-2'];
+    prevHighlights.hidden = propertyFormState.features.length === 0;
     prevHighlights.innerHTML = propertyFormState.features.slice(0, 5).map((feat, idx) => `
       <div class="preview-highlight-item">
         <i data-lucide="${icons[idx % icons.length]}"></i>
@@ -135,6 +132,7 @@ function updateLivePreview() {
 
   // Location Highlights in Live Preview
   if (prevLocations) {
+    document.getElementById('previewLocationSection').hidden = propertyFormState.locationAdvantages.length === 0;
     prevLocations.innerHTML = propertyFormState.locationAdvantages.map(loc => `
       <div class="preview-location-item">
         <i data-lucide="map-pin"></i>
@@ -190,10 +188,6 @@ function renderImageGallery() {
 }
 
 function removeImage(index) {
-  if (propertyFormState.images.length <= 1) {
-    showToast('At least one property image is required', 'error');
-    return;
-  }
   propertyFormState.images.splice(index, 1);
   if (propertyFormState.currentHeroIndex >= propertyFormState.images.length) {
     propertyFormState.currentHeroIndex = 0;
@@ -258,16 +252,12 @@ function updateFeatureValue(idx, val) {
 }
 
 function addFeatureRow() {
-  propertyFormState.features.push({ name: 'New Amenity', value: 'Included' });
+  propertyFormState.features.push({ name: '', value: '' });
   renderFeaturesList();
   updateLivePreview();
 }
 
 function removeFeature(idx) {
-  if (propertyFormState.features.length <= 1) {
-    showToast('At least one feature is required', 'error');
-    return;
-  }
   propertyFormState.features.splice(idx, 1);
   renderFeaturesList();
   updateLivePreview();
@@ -299,16 +289,12 @@ function updateLocationAdvantage(idx, val) {
 }
 
 function addLocationRow() {
-  propertyFormState.locationAdvantages.push('5 Mins - Prime Landmark');
+  propertyFormState.locationAdvantages.push('');
   renderLocationList();
   updateLivePreview();
 }
 
 function removeLocation(idx) {
-  if (propertyFormState.locationAdvantages.length <= 1) {
-    showToast('At least one location highlight is required', 'error');
-    return;
-  }
   propertyFormState.locationAdvantages.splice(idx, 1);
   renderLocationList();
   updateLivePreview();
@@ -326,18 +312,21 @@ function handleFloorPlanUpload(event) {
     const prevFloor = document.getElementById('prevFloorImg');
     if (imgEl) imgEl.src = e.target.result;
     if (prevFloor) prevFloor.src = e.target.result;
+    document.getElementById('floorPlanThumb').hidden = false;
+    document.getElementById('previewFloorSection').hidden = false;
     showToast('Floor plan uploaded!', 'success');
   };
   reader.readAsDataURL(file);
 }
 
 function removeFloorPlan() {
-  propertyFormState.floorPlan = 'assets/images/floorplan.svg';
+  propertyFormState.floorPlan = '';
   const imgEl = document.getElementById('floorPlanThumbImg');
   const prevFloor = document.getElementById('prevFloorImg');
-  if (imgEl) imgEl.src = propertyFormState.floorPlan;
-  if (prevFloor) prevFloor.src = propertyFormState.floorPlan;
-  showToast('Reset floor plan to default template', 'info');
+  if (imgEl) imgEl.removeAttribute('src');
+  if (prevFloor) prevFloor.removeAttribute('src');
+  document.getElementById('floorPlanThumb').hidden = true;
+  document.getElementById('previewFloorSection').hidden = true;
 }
 
 function handleBrochureUpload(event) {
@@ -351,38 +340,79 @@ function handleBrochureUpload(event) {
   const sizeEl = document.getElementById('brochureFileSize');
   if (nameEl) nameEl.textContent = propertyFormState.brochureName;
   if (sizeEl) sizeEl.textContent = propertyFormState.brochureSize;
+  document.getElementById('uploadedBrochureCard').hidden = false;
+  document.getElementById('previewBrochureButton').hidden = false;
 
   showToast('Brochure PDF uploaded successfully!', 'success');
 }
 
 function removeBrochure() {
-  propertyFormState.brochureName = 'Property_Brochure.pdf';
-  propertyFormState.brochureSize = '2.4 MB';
+  propertyFormState.brochureName = '';
+  propertyFormState.brochureSize = '';
   const nameEl = document.getElementById('brochureFileName');
   const sizeEl = document.getElementById('brochureFileSize');
-  if (nameEl) nameEl.textContent = propertyFormState.brochureName;
-  if (sizeEl) sizeEl.textContent = propertyFormState.brochureSize;
-  showToast('Reset to default brochure', 'info');
+  if (nameEl) nameEl.textContent = '';
+  if (sizeEl) sizeEl.textContent = '';
+  document.getElementById('uploadedBrochureCard').hidden = true;
+  document.getElementById('previewBrochureButton').hidden = true;
+}
+
+function getGoogleFormUrl() {
+  const input = document.getElementById('inputGoogleFormUrl');
+  const value = input ? input.value.trim() : '';
+  if (!value) {
+    showToast('Enter a Google Form link first.', 'error');
+    return '';
+  }
+
+  try {
+    const url = new URL(value);
+    if (url.protocol !== 'https:' && url.protocol !== 'http:') throw new Error('Unsupported URL protocol.');
+    const isGoogleForm = url.hostname === 'forms.gle' ||
+      (url.hostname === 'docs.google.com' && url.pathname.startsWith('/forms/'));
+    if (!isGoogleForm) throw new Error('URL is not a Google Forms link.');
+    return url.href;
+  } catch (error) {
+    showToast('Enter a valid Google Form link.', 'error');
+    return '';
+  }
+}
+
+function copyGoogleFormLink() {
+  const url = getGoogleFormUrl();
+  if (url) copyToClipboard(url, document.getElementById('copyGoogleFormLinkButton'));
+}
+
+function shareGoogleFormViaWhatsApp() {
+  const url = getGoogleFormUrl();
+  if (!url) return;
+
+  const title = document.getElementById('inputPropertyTitle').value.trim();
+  const message = title
+    ? `Please fill out this form about ${title}: ${url}`
+    : `Please fill out this form: ${url}`;
+  window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
 }
 
 // Form Submission: Save Draft & Publish
 function collectFormData(status = 'Published') {
-  const title = document.getElementById('inputPropertyTitle').value.trim() || 'Untitled Property';
+  const title = document.getElementById('inputPropertyTitle').value.trim();
   const type = document.getElementById('selectPropertyType').value;
-  const rawPrice = document.getElementById('inputPropertyPrice').value.trim() || '70,00,000';
-  const price = rawPrice.startsWith('₹') ? rawPrice : `₹ ${rawPrice}`;
-  const carpetArea = document.getElementById('inputCarpetArea').value.trim() || '250 - 800';
-  const desc = document.getElementById('inputPropertyDesc').value.trim() || propertyFormState.description;
+  const rawPrice = document.getElementById('inputPropertyPrice').value.trim();
+  const price = rawPrice ? (rawPrice.startsWith('₹') ? rawPrice : `₹ ${rawPrice}`) : '';
+  const carpetArea = document.getElementById('inputCarpetArea').value.trim();
+  const desc = document.getElementById('inputPropertyDesc').value.trim();
 
   const propObj = {
     id: propertyFormState.id || `P${Math.floor(1000 + Math.random() * 9000)}`,
     title: title,
     type: type,
     price: price,
+    googleFormUrl: document.getElementById('inputGoogleFormUrl').value.trim(),
     priceUnit: 'Onwards*',
-    area: `${carpetArea} Sq.ft`,
+    area: carpetArea ? `${carpetArea} Sq.ft` : '',
     carpetArea: carpetArea,
-    location: propertyFormState.locationAdvantages[0] ? propertyFormState.locationAdvantages[0].replace(/^[0-9]+\s*Mins\s*-\s*/, '') + ', Pune' : 'Pune',
+    location: '',
     status: status,
     image: propertyFormState.images[0] || 'assets/images/property-placeholder.svg',
     gallery: [...propertyFormState.images],
@@ -472,6 +502,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const descInput = document.getElementById('inputPropertyDesc');
   const typeSelect = document.getElementById('selectPropertyType');
   const priceInput = document.getElementById('inputPropertyPrice');
+  const googleFormInput = document.getElementById('inputGoogleFormUrl');
   const carpetInput = document.getElementById('inputCarpetArea');
 
   if (titleInput) {
@@ -492,6 +523,12 @@ document.addEventListener('DOMContentLoaded', () => {
     typeSelect.addEventListener('change', (e) => {
       propertyFormState.type = e.target.value;
       updateLivePreview();
+    });
+  }
+
+  if (googleFormInput) {
+    googleFormInput.addEventListener('input', (e) => {
+      propertyFormState.googleFormUrl = e.target.value.trim();
     });
   }
 

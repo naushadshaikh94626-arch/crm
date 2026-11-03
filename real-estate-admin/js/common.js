@@ -241,7 +241,7 @@ function fallbackCopy(text, triggerBtn) {
 }
 
 function onCopySuccess(triggerBtn) {
-  showToast('Property share link copied to clipboard!', 'success');
+  showToast('Link copied to clipboard!', 'success');
   if (triggerBtn) {
     const originalHtml = triggerBtn.innerHTML;
     triggerBtn.innerHTML = '<i data-lucide="check"></i>';
@@ -452,12 +452,16 @@ function copyModalLink() {
 function shareToSocial(platform) {
   if (!activeModalProperty || !activeModalShareUrl) return;
   const url = activeModalShareUrl;
+  const formLink = activeModalProperty.googleFormUrl
+    ? `\n\nPlease fill out this form: ${activeModalProperty.googleFormUrl}`
+    : '';
   const title = `Check out this property: ${activeModalProperty.title} (${activeModalProperty.location}) - Price: ${activeModalProperty.price}`;
+  const message = `${title}\n${url}${formLink}`;
 
   let targetUrl = '';
   switch (platform) {
     case 'whatsapp':
-      targetUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(title + '\n' + url)}`;
+      targetUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
       break;
     case 'telegram':
       targetUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`;
@@ -469,7 +473,7 @@ function shareToSocial(platform) {
       targetUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
       break;
     case 'email':
-      targetUrl = `mailto:?subject=${encodeURIComponent(activeModalProperty.title)}&body=${encodeURIComponent(title + '\n\n' + url)}`;
+      targetUrl = `mailto:?subject=${encodeURIComponent(activeModalProperty.title)}&body=${encodeURIComponent(message)}`;
       break;
   }
 
