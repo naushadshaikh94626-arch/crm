@@ -18,6 +18,19 @@ function appendFeature(container, feature) {
   container.appendChild(item);
 }
 
+function getGoogleFormUrl(value) {
+  if (typeof value !== 'string' || !value) return '';
+  try {
+    const url = new URL(value);
+    const isGoogleForm = url.protocol === 'https:' &&
+      (url.hostname === 'forms.gle' ||
+        (url.hostname === 'docs.google.com' && url.pathname.startsWith('/forms/')));
+    return isGoogleForm ? url.href : '';
+  } catch {
+    return '';
+  }
+}
+
 async function loadSharedProperty() {
   const params = new URLSearchParams(window.location.search);
   const previewToken = params.get('preview');
@@ -93,6 +106,12 @@ function renderSharedProperty(property) {
   document.getElementById('propertyLocation').textContent = property.location || '';
   document.getElementById('propertyPrice').textContent = property.price || '';
   document.getElementById('propertyArea').textContent = property.area || '';
+  const bookingButton = document.getElementById('bookingFormButton');
+  const googleFormUrl = getGoogleFormUrl(property.googleFormUrl);
+  if (googleFormUrl) {
+    bookingButton.href = googleFormUrl;
+    bookingButton.hidden = false;
+  }
 
   propertyImage.src = images[0] || 'assets/images/property-placeholder.svg';
   propertyImage.alt = property.title ? `${property.title} property` : 'Property';

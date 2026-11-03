@@ -92,9 +92,16 @@ function updateLivePreview() {
   const prevLocations = document.getElementById('prevLocationList');
   const floorPlanThumb = document.getElementById('floorPlanThumb');
   const prevFloor = document.getElementById('prevFloorImg');
+  const previewBookingButton = document.getElementById('previewBookingButton');
+  const googleFormUrl = getValidGoogleFormUrl(propertyFormState.googleFormUrl);
 
   if (prevTitle) prevTitle.textContent = propertyFormState.title || 'Property title';
   if (prevDesc) prevDesc.textContent = propertyFormState.description || 'Property description will appear here...';
+  if (previewBookingButton) {
+    previewBookingButton.hidden = !googleFormUrl;
+    if (googleFormUrl) previewBookingButton.href = googleFormUrl;
+    else previewBookingButton.removeAttribute('href');
+  }
   document.getElementById('previewFloorSection').hidden = !propertyFormState.floorPlan;
   if (floorPlanThumb) floorPlanThumb.hidden = !propertyFormState.floorPlan;
   if (propertyFormState.floorPlan) {
@@ -446,15 +453,23 @@ function getGoogleFormUrl() {
     return '';
   }
 
+  const url = getValidGoogleFormUrl(value);
+  if (url) return url;
+  else {
+    showToast('Enter a valid Google Form link.', 'error');
+    return '';
+  }
+}
+
+function getValidGoogleFormUrl(value) {
+  if (!value) return '';
   try {
     const url = new URL(value);
-    if (url.protocol !== 'https:' && url.protocol !== 'http:') throw new Error('Unsupported URL protocol.');
-    const isGoogleForm = url.hostname === 'forms.gle' ||
-      (url.hostname === 'docs.google.com' && url.pathname.startsWith('/forms/'));
-    if (!isGoogleForm) throw new Error('URL is not a Google Forms link.');
-    return url.href;
-  } catch (error) {
-    showToast('Enter a valid Google Form link.', 'error');
+    const isGoogleForm = url.protocol === 'https:' &&
+      (url.hostname === 'forms.gle' ||
+        (url.hostname === 'docs.google.com' && url.pathname.startsWith('/forms/')));
+    return isGoogleForm ? url.href : '';
+  } catch {
     return '';
   }
 }

@@ -98,6 +98,26 @@ body {
   font-weight: 700;
 }
 
+.booking-form-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  padding: 13px 22px;
+  border-radius: 8px;
+  background: #f4510b;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+}
+
+.booking-form-btn:hover {
+  background: #d94308;
+}
+
 .property-gallery {
   display: flex;
   gap: 12px;
