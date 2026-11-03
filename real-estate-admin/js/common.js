@@ -400,10 +400,19 @@ async function openShareModal(propertyId) {
   };
 
   try {
+    const sharedProperty = { ...prop };
+    if (Array.isArray(sharedProperty.gallery) && sharedProperty.gallery[0] === sharedProperty.image) {
+      delete sharedProperty.image;
+    }
+    const requestBody = JSON.stringify({ property: sharedProperty });
+    if (new Blob([requestBody]).size > 1_900_000) {
+      throw new Error('Property images or details are too large to share. Remove an image and try again.');
+    }
+
     const response = await fetch('/.netlify/functions/property-share', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ property: prop })
+      body: requestBody
     });
     const result = await response.json();
     if (!response.ok || !result.token) {
@@ -427,7 +436,7 @@ async function openShareModal(propertyId) {
     if (requestId !== activeModalShareRequest) return;
     linkInput.placeholder = 'Unable to create share link';
     shareStatusLabel.textContent = 'Unavailable';
-    showToast('Could not create a share link. Check the Netlify share service and try again.', 'error');
+    showToast(error instanceof Error ? error.message : 'Could not create a share link.', 'error');
   }
 }
 

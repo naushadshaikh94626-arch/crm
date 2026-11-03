@@ -44,9 +44,10 @@ function validateProperty(value) {
     priceUnit: limitedText(value.priceUnit, 'price unit', 80),
     area: limitedText(value.area, 'area', 120),
     location: limitedText(value.location, 'location', 300),
-    image: limitedText(value.image, 'image', 1_500_000),
+    image: limitedText(value.image || gallery[0], 'image', 1_500_000),
     gallery: gallery.map((image, index) => limitedText(image, `gallery image ${index + 1}`, 1_500_000)),
     description: limitedText(value.description, 'description', 20_000),
+    googleFormUrl: limitedText(value.googleFormUrl, 'Google Form URL', 2_000),
     features: features.map((feature, index) => {
       if (!feature || typeof feature !== 'object' || Array.isArray(feature)) {
         throw new Error(`Invalid feature ${index + 1}`);

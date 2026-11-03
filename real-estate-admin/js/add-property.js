@@ -22,6 +22,8 @@ let propertyFormState = {
   brochureSize: ''
 };
 
+const MAX_GALLERY_DATA_URL_SIZE = 1_000_000;
+
 // Check if Editing existing property
 function checkEditMode() {
   const params = new URLSearchParams(window.location.search);
@@ -201,21 +203,100 @@ function triggerImagePicker() {
   if (fileInput) fileInput.click();
 }
 
-function handleImageFiles(event) {
-  const files = event.target.files;
+function compressPropertyImage(file, maxDataUrlSize) {
+  return new Promise((resolve, reject) => {
+    const objectUrl = typeof file === 'string' ? '' : URL.createObjectURL(file);
+    const image = new Image();
+
+    image.onload = () => {
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+      try {
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        if (!context) throw new Error('Your browser could not process this image.');
+
+        let scale = Math.min(1, 1600 / Math.max(image.naturalWidth, image.naturalHeight));
+        let dataUrl = '';
+        while (scale >= 0.25) {
+          canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+          canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+          context.fillStyle = '#FFFFFF';
+          context.fillRect(0, 0, canvas.width, canvas.height);
+          context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+          for (let quality = 0.8; quality >= 0.45; quality -= 0.1) {
+            dataUrl = canvas.toDataURL('image/jpeg', quality);
+            if (dataUrl.length <= maxDataUrlSize) {
+              resolve(dataUrl);
+              return;
+            }
+          }
+          scale *= 0.8;
+        }
+        reject(new Error('This image is too large to add. Choose a smaller image.'));
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    image.onerror = () => {
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+      reject(new Error(`Unable to read image "${typeof file === 'string' ? 'from this property' : file.name}".`));
+    };
+    image.src = objectUrl || file;
+  });
+}
+
+async function optimizePropertyImages() {
+  let remainingSpace = MAX_GALLERY_DATA_URL_SIZE;
+  const optimizedImages = [];
+
+  for (const image of propertyFormState.images) {
+    if (image.startsWith('data:')) {
+      const optimizedImage = await compressPropertyImage(image, remainingSpace);
+      remainingSpace -= optimizedImage.length;
+      optimizedImages.push(optimizedImage);
+    } else {
+      optimizedImages.push(image);
+    }
+  }
+
+  propertyFormState.images = optimizedImages;
+  renderImageGallery();
+  updateLivePreview();
+}
+
+async function handleImageFiles(event) {
+  const files = Array.from(event.target.files || []);
   if (!files || files.length === 0) return;
 
-  Array.from(files).forEach(file => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      propertyFormState.images.push(e.target.result);
+  let uploadedCount = 0;
+  for (const file of files) {
+    const usedSpace = propertyFormState.images
+      .filter(image => image.startsWith('data:'))
+      .reduce((total, image) => total + image.length, 0);
+    const remainingSpace = MAX_GALLERY_DATA_URL_SIZE - usedSpace;
+    if (remainingSpace <= 0) {
+      showToast('Image upload limit reached. Remove an image before adding another.', 'error');
+      break;
+    }
+
+    try {
+      const imageData = await compressPropertyImage(file, remainingSpace);
+      propertyFormState.images.push(imageData);
+      uploadedCount += 1;
       renderImageGallery();
       updateLivePreview();
-    };
-    reader.readAsDataURL(file);
-  });
+    } catch (error) {
+      console.error('Unable to add property image:', error);
+      showToast(error.message, 'error');
+    }
+  }
 
-  showToast(`${files.length} image(s) uploaded successfully!`, 'success');
+  if (uploadedCount > 0) {
+    showToast(`${uploadedCount} image(s) uploaded and optimized.`, 'success');
+  }
+  event.target.value = '';
 }
 
 // Dynamic Features / Highlights Management
@@ -475,7 +556,15 @@ function saveDraft() {
   showToast('Property saved as Draft!', 'success');
 }
 
-function publishAndGenerateLink() {
+async function publishAndGenerateLink() {
+  try {
+    await optimizePropertyImages();
+  } catch (error) {
+    console.error('Unable to prepare property images for publishing:', error);
+    showToast(error.message || 'Unable to prepare property images for publishing.', 'error');
+    return;
+  }
+
   const prop = collectFormData('Published');
   const existing = DataStore.getPropertyById(prop.id);
   if (existing && existing.id === prop.id) {
@@ -484,7 +573,7 @@ function publishAndGenerateLink() {
     DataStore.addProperty(prop);
   }
 
-  showToast('Property Published & Link Generated!', 'success');
+  showToast('Property published. Preparing the share link...', 'success');
 
   // Open the exact Share Modal with this new property's generated link
   setTimeout(() => {
